@@ -180,5 +180,5 @@ function [V, P, Q] = GaussSeidel(lineData, busData, R_coeff, maxIter, tolerance)
     Q(1) = imag(S_slack);
 
     fprintf("Results converged after: %d iterations\n", iteration);
-    fprintf("Error: %f\n", error);
+    fprintf("Error: %.32f\n", error);
 end
