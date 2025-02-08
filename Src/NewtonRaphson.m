@@ -82,6 +82,8 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
     %   Q - Vector of reactive power at each bus, representing the difference 
     %       between generation and load.
 
+    global ERROR WARNING INFO DEBUG CRITICAL;
+
     Y = CreateAdmittanceMatrix(lineData);
     Ymag = abs(Y);
     theta = angle(Y);
@@ -219,11 +221,14 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
     PL = sum(Pg) - sum(Pl);
     QL = sum(Qg) - sum(Ql);
 
+    DEBUG(sprintf("Real power loss: %.32f", PL));
+    DEBUG(sprintf("Reactive power loss: %.32f", QL));
+
     P = Pg - Pl; 
     Q = Qg - Ql;
     V = Vmag .* (cos(delta) + 1i * sin(delta));
 
-    fprintf("Results converged after: %d iterations\n", iteration);
-    fprintf("Error: %.32f\n", error);
+    DEBUG(sprintf("Newton-Raphson converged after: %d iterations", iteration));
+    DEBUG(sprintf("Convergence Discrepancy: %.32f", error));
 
 end

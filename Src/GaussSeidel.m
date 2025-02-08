@@ -43,7 +43,7 @@
 %}
 
 
-function [V, P, Q] = GaussSeidel(lineData, busData, R_coeff, maxIter, tolerance)
+function [V, P, Q] = GaussSeidel(lineData, busData, maxIter, tolerance)
     % GaussSeidel Solves the power flow equations using the Gauss-Seidel iterative method.
     %
     % This function implements the Gauss-Seidel method to solve the power flow 
@@ -63,9 +63,6 @@ function [V, P, Q] = GaussSeidel(lineData, busData, R_coeff, maxIter, tolerance)
     %                Pg, Qg, Pl, Ql, Qmax, Qmin].
     %               The matrix should have N x 10, where N is the number of buses.
     %
-    %   R_coeff   - Relaxation coefficient used to improve the convergence rate 
-    %               by adjusting the update step for voltage at each iteration.
-    %
     %   maxIter   - Maximum number of iterations allowed for the Gauss-Seidel method.
     %
     %   tolerance - Convergence criterion based on the maximum voltage update 
@@ -82,6 +79,10 @@ function [V, P, Q] = GaussSeidel(lineData, busData, R_coeff, maxIter, tolerance)
     %
     %   Q - Vector of reactive power at each bus, representing the difference 
     %       between generation and load.
+
+    global ERROR WARNING INFO DEBUG CRITICAL;
+
+    R_coeff = RelaxationCoefficient();
 
     Y = CreateAdmittanceMatrix(lineData);
     Ymag = abs(Y);
@@ -179,6 +180,6 @@ function [V, P, Q] = GaussSeidel(lineData, busData, R_coeff, maxIter, tolerance)
     P(1) = real(S_slack);
     Q(1) = imag(S_slack);
 
-    fprintf("Results converged after: %d iterations\n", iteration);
-    fprintf("Error: %.32f\n", error);
+    DEBUG(sprintf("Gauss-Seidel converged after: %d iterations", iteration));
+    DEBUG(sprintf("Convergence Discrepancy: %.32f", error));
 end

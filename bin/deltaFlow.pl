@@ -32,7 +32,7 @@
 #     deltaFlow
 #
 # Description
-#     Perl script to execute MATLAB in no-display mode and log output.
+#     Perl script to execute deltaFlow MATLAB script in no-display mode.
 #
 # Author
 #     Saud Zahir
@@ -42,4 +42,5 @@
 #--------------------------------------------------------------------------------
 
 
-system("matlab -nodisplay > deltaFlow.log");
+system("matlab -nodisplay -r \"run('Src/main.m'); exit;\"") == 0
+    or die "Failed to execute MATLAB script: $!";
