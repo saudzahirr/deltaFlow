@@ -44,22 +44,40 @@
 
 clc
 clear all
+format long
 
-% R_coeff = 1.6;
-R_coeff = 1.0; % Relaxation coefficient
-maxIter = 1024;
-tolerance = 1E-16;
-format long;
+global ERROR WARNING INFO DEBUG CRITICAL
+InitLogger();
 
-% Bus Type  Slack = 1, PV = 2, PQ = 3
-busTable = readtable("./data/bus-data.csv");
-lineTable = readtable("./data/line-data.csv");
+INFO("Choose the method for power flow solution:");
+INFO("1. Gauss-Seidel");
+INFO("2. Newton-Raphson");
+
+methodChoice = input("Enter your choice (1 for Gauss-Seidel, 2 for Newton-Raphson): ");
+maxIter = input("Enter the maximum number of iterations (e.g., 1024): ");
+tolerance = input("Enter the tolerance (e.g., 1E-16): ");
+busPath = input("Enter the path for the bus data file: ", "s");
+linePath = input("Enter the path for the line data file: ", "s");
+
+busTable = readtable(busPath);
+lineTable = readtable(linePath);
 
 busData = [busTable.ID, busTable.Type, busTable.V, busTable.delta, busTable.Pg, busTable.Qg, busTable.Pl, busTable.Ql, busTable.Qgmax, busTable.Qgmin];
 lineData = [lineTable.From, lineTable.To, lineTable.R, lineTable.X, lineTable.G, lineTable.B, lineTable.a];
 
-[V, P, Q] = GaussSeidel(lineData, busData, R_coeff, maxIter, tolerance);
-disp(V);
-disp(P);
-disp(Q);
-% exit;
+switch methodChoice
+    case 1
+        INFO("Starting Gauss-Seidel method ...");
+        [V, P, Q] = GaussSeidel(lineData, busData, maxIter, tolerance);
+        WritePowerFlowCsv(P, Q, V);
+
+    case 2
+        INFO("Starting Newton-Raphson method ...");
+        [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance);
+        WritePowerFlowCsv(P, Q, V);
+
+    otherwise
+        WARNING("Invalid choice. Please select either 1 for Gauss-Seidel or 2 for Newton-Raphson.");
+end
+
+exit;

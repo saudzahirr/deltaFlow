@@ -82,6 +82,8 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
     %   Q - Vector of reactive power at each bus, representing the difference 
     %       between generation and load.
 
+    global ERROR WARNING INFO DEBUG CRITICAL;
+
     Y = CreateAdmittanceMatrix(lineData);
     Ymag = abs(Y);
     theta = angle(Y);
@@ -100,15 +102,16 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
     V = Vmag .* (cos(delta) + 1i * sin(delta));
 
     P_net = Pg - Pl; 
-    Q_net = Qg - Ql;  
+    Q_net = Qg - Ql;
 
     error = Inf;
     iteration = 0;
 
     while error >= tolerance && iteration < maxIter
+        P_estimate = zeros(N, 1);
+        Q_estimate = zeros(N, 1);
+
         for i = 2:N
-            P_estimate(i) = 0; 
-            Q_estimate(i) = 0;
             for n = 1:N
                 P_estimate(i) = P_estimate(i) + Vmag(i) * Vmag(n) * Ymag(i, n) * cos(theta(i, n) + delta(n) - delta(i));
                 Q_estimate(i) = Q_estimate(i) - Vmag(i) * Vmag(n) * Ymag(i, n) * sin(theta(i, n) + delta(n) - delta(i));
@@ -124,46 +127,46 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
                     busData(i, 2) = 3; % PV ---> PQ
                 else
                     busData(i, 2) = 2;
-                    Vmag(i) = busData(i, 7);
+                    Vmag(i) = busData(i, 3);
                 end
             end
         end
 
-        DP = P_net(2:N) - P_estimate(2:N)';
-        DQ = Q_net([find(busData(:, 2) == 3)]) - Q_estimate([find(busData(:, 2) == 3)])';
+        dP = P_net(2:N) - P_estimate(2:N);
+        dQ = Q_net(busData(:, 2) == 3) - Q_estimate(busData(:, 2) == 3);
 
         %% Jacobian Matrix Computation
-        % J1 
+        % J1
         J1 = zeros(N, N);
         for i = 1:N
             for n = 1:N
                 if n ~= i
-                    J1(i, i) = J1(i, i) + Vmag(i) * Vmag(n) * Ymag(i, n) * sin(theta(i, n) + delta(n) - delta(i));           
-                    J1(i, n) = - Vmag(i) * Vmag(n) * Ymag(i, n) * sin(theta(i, n) + delta(n) - delta(i));
+                    J1(i, i) = J1(i, i) + Vmag(i) * Vmag(n) * Ymag(i, n) * sin(theta(i, n) + delta(n) - delta(i));
+                    J1(i, n) = -Vmag(i) * Vmag(n) * Ymag(i, n) * sin(theta(i, n) + delta(n) - delta(i));
                     J1(n, i) = J1(i, n);
                 end
             end
         end
-        J11 = J1([find(busData(:, 2) ~= 1)], [find(busData(:, 2) ~= 1)]);
+        J11 = J1(busData(:, 2) ~= 1, busData(:, 2) ~= 1);
 
         % J2
         J2 = zeros(N, N);
         for i = 1:N
-            for n = 1:N %[find(busData(:, 2) == 3)]
+            for n = 1:N
                 if n ~= i
-                    J2(i, i) = J2(i, i) + Vmag(n) * Ymag(i, n) * cos(theta(i, n) + delta(n) - delta(i));           
-                    J2(i, n) =  Vmag(i) * Ymag(i, n) * cos(theta(i, n) + delta(n) - delta(i));
+                    J2(i, i) = J2(i, i) + Vmag(n) * Ymag(i, n) * cos(theta(i, n) + delta(n) - delta(i));
+                    J2(i, n) = Vmag(i) * Ymag(i, n) * cos(theta(i, n) + delta(n) - delta(i));
                     J2(n, i) = J2(i, n);
                 else
-                    J2(i, i) = J2(i, i) + 2 * Vmag(i) * Ymag(i) * cos(theta(i, i));
+                    J2(i, i) = J2(i, i) + 2 * Vmag(i) * Ymag(i) * cos(theta(i,i));
                 end
             end
         end
-        J22 = J2([find(busData(:, 2) ~= 1)], [find(busData(:, 2) == 3)]);
+        J22 = J2(busData(:, 2) ~= 1, busData(:, 2) == 3);
 
         % J3
-        J3 =  zeros(N, N);
-        for i = 1:N %[find(busData(:, 2) == 3)]
+        J3 = zeros(N, N);
+        for i = 1:N
             for n = 1:N
                 if n ~= i
                     J3(i, i) = J3(i, i) + Vmag(i) * Vmag(n) * Ymag(i, n) * cos(theta(i, n) + delta(n) - delta(i));
@@ -172,30 +175,30 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
                 end
             end
         end
-        J33 = J3([find(busData(:, 2) == 3)], [find(busData(:, 2) ~= 1)]);
+        J33 = J3(busData(:, 2) == 3, busData(:, 2) ~= 1);
 
         % J4
         J4 = zeros(N, N);
-        for i = 1:N %[find(busData(:, 2) == 3)]
+        for i = 1:N
             for n = 1:N
                 if n == i
-                    J4(i, i) = J4(i, i) - 2 * Vmag(i) * Ymag(i, i) * sin(theta(i, i));
+                    J4(i, i) = J4(i, i) - 2 * Vmag(i) * Ymag(i, i) * sin(theta(i,i));
                 else
                     J4(i, i) = J4(i, i) - Vmag(n) * Ymag(i, n) * sin(theta(i, n) + delta(n) - delta(i));
                 end
             end
         end
 
-        J44 = J4([find(busData(:, 2) == 3)], [find(busData(:, 2) == 3)]);
+        J44 = J4(busData(:, 2) == 3, busData(:, 2) == 3);
 
         J = [J11 J22; J33 J44];
 
         %% Correction Vector Computation
-        DF = [DP; DQ];
+        DF = [dP; dQ];
         DX = J \ DF;
 
-        delta([find(busData(:, 2) ~= 1)]) = delta([find(busData(:, 2) ~= 1)]) + DX(1:length(find(busData(:, 2) ~= 1)));
-        Vmag([find(busData(:, 2) == 3)]) = Vmag([find(busData(:, 2) == 3)]) + DX(length([find(busData(:, 2) ~= 1)])+1:length(DX));
+        delta(busData(:, 2) ~= 1) = delta(busData(:, 2) ~= 1) + DX(1:length(find(busData(:, 2) ~= 1)));
+        Vmag(busData(:, 2) == 3) = Vmag(busData(:, 2) == 3) + DX(length(find(busData(:, 2) ~= 1)) + 1:end);
 
         error = norm(DF);
         iteration = iteration + 1;
@@ -208,9 +211,9 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
     end
 
     %% Reactive power of PV buses
-    for i = [find(busData(:, 2) == 2)]
+    for i = find(busData(:, 2) == 2)'
         for n = 1:N
-            Qg(i) = Qg(i) - Vmag(i) .* Vmag(n) .* Ymag(i, n) .* sin(theta(i, n) + delta(n) - delta(i));     
+            Qg(i) = Qg(i) - Vmag(i) * Vmag(n) * Ymag(i, n) * sin(theta(i, n) + delta(n) - delta(i));      
         end
     end
 
@@ -218,11 +221,14 @@ function [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance)
     PL = sum(Pg) - sum(Pl);
     QL = sum(Qg) - sum(Ql);
 
-    P = Pg - Pl;
+    DEBUG(sprintf("Real power loss: %.32f", PL));
+    DEBUG(sprintf("Reactive power loss: %.32f", QL));
+
+    P = Pg - Pl; 
     Q = Qg - Ql;
     V = Vmag .* (cos(delta) + 1i * sin(delta));
 
-    fprintf("Results converged after: %d iterations\n", iteration);
-    fprintf("Error: %f\n", error);
+    DEBUG(sprintf("Newton-Raphson converged after: %d iterations", iteration));
+    DEBUG(sprintf("Convergence Discrepancy: %.32f", error));
 
 end
