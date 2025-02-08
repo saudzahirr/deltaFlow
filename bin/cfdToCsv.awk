@@ -48,7 +48,7 @@ BEGIN {
     busCount = 0;
     branchCount = 0;
 
-    busDataColumns = "ID,Name,Type,V,delta,Pg,Qq,Pl,Ql,Qgmax,Qgmin";
+    busDataColumns = "ID,Name,Type,V,delta,Pg,Qg,Pl,Ql,Qgmax,Qgmin";
     lineDataColumns = "From,To,R,X,G,B,a";
     busTypes["0"] = "3";
     busTypes["1"] = "3";
