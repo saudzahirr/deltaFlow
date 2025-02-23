@@ -42,7 +42,7 @@
 %}
 
 
-function Ybus = CreateAdmittanceMatrix(lineData)
+function Ybus = CreateAdmittanceMatrix(lineData, busData)
     % CreateAdmittanceMatrix Calculates the Bus Admittance Matrix (Ybus)
     % with transformer tap settings (a).
     %
@@ -83,5 +83,12 @@ function Ybus = CreateAdmittanceMatrix(lineData)
         % Diagonal elements (self-admittance of the buses)
         Ybus(lineData(k, 1), lineData(k, 1)) = Ybus(lineData(k, 1), lineData(k, 1)) + Y(k) / (a(k)^2) + B(k);
         Ybus(lineData(k, 2), lineData(k, 2)) = Ybus(lineData(k, 2), lineData(k, 2)) + Y(k) + B(k);
+    end
+
+    G_shunt = busData(:, 11);
+    B_shunt = busData(:, 12);
+
+    for n = 1:N
+        Ybus(n, n) = Ybus(n, n) + (G_shunt(n) + 1i * B_shunt(n));
     end
 end

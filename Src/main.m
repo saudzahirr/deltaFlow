@@ -62,7 +62,7 @@ linePath = input("Enter the path for the line data file: ", "s");
 busTable = readtable(busPath);
 lineTable = readtable(linePath);
 
-busData = [busTable.ID, busTable.Type, busTable.V, busTable.delta, busTable.Pg, busTable.Qg, busTable.Pl, busTable.Ql, busTable.Qgmax, busTable.Qgmin];
+busData = [busTable.ID, busTable.Type, busTable.V, busTable.delta, busTable.Pg, busTable.Qg, busTable.Pl, busTable.Ql, busTable.Qgmax, busTable.Qgmin, busTable.Gs, busTable.Bs];
 lineData = [lineTable.From, lineTable.To, lineTable.R, lineTable.X, lineTable.G, lineTable.B, lineTable.a];
 
 switch methodChoice

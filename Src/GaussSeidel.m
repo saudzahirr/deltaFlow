@@ -84,14 +84,14 @@ function [V, P, Q] = GaussSeidel(lineData, busData, maxIter, tolerance)
 
     R_coeff = RelaxationCoefficient();
 
-    Y = CreateAdmittanceMatrix(lineData);
+    Y = CreateAdmittanceMatrix(lineData, busData);
     Ymag = abs(Y);
     theta = angle(Y);
     N = size(Y, 1);
 
     type = busData(:,2);
     Vmag = busData(:,3);
-    delta = busData(:,4); 
+    delta = busData(:,4) * pi/180;
     Pg = busData(:,5);
     Qg = busData(:,6);
     Pl = busData(:,7);
