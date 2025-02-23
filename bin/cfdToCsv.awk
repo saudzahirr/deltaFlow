@@ -48,7 +48,7 @@ BEGIN {
     busCount = 0;
     branchCount = 0;
 
-    busDataColumns = "ID,Name,Type,V,delta,Pg,Qg,Pl,Ql,Qgmax,Qgmin";
+    busDataColumns = "ID,Name,Type,V,delta,Pg,Qg,Pl,Ql,Qgmax,Qgmin,Gs,Bs";
     lineDataColumns = "From,To,R,X,G,B,a";
     busTypes["0"] = "3";
     busTypes["1"] = "3";
@@ -98,12 +98,14 @@ read == "busData" && $1 ~/^[0-9]+$/ {
     busType[busCount]  = strip(substr($0, 25, 2));
     voltage[busCount]  = strip(substr($0, 28, 6));
     delta[busCount]    = strip(substr($0, 34, 7));
-    pLoad[busCount]    = strip(substr($0, 41, 9));
-    qLoad[busCount]    = strip(substr($0, 50, 10));
-    pGen[busCount]     = strip(substr($0, 60, 8));
-    qGen[busCount]     = strip(substr($0, 68, 8));
-    qGMax[busCount]    = strip(substr($0, 91, 8));
-    qGMin[busCount]    = strip(substr($0, 99, 8));
+    pLoad[busCount]    = strip(substr($0, 41, 9))/100;
+    qLoad[busCount]    = strip(substr($0, 50, 10))/100;
+    pGen[busCount]     = strip(substr($0, 60, 8))/100;
+    qGen[busCount]     = strip(substr($0, 68, 8))/100;
+    qGMax[busCount]    = strip(substr($0, 91, 8))/100;
+    qGMin[busCount]    = strip(substr($0, 99, 8))/100;
+    gShunt[busCount]   = strip(substr($0, 107, 8));
+    bShunt[busCount]   = strip(substr($0, 115, 8));
 }
 
 read == "branchData" && $1 ~/^[0-9]+$/ && $2 ~/^[0-9]+$/ {
@@ -118,14 +120,14 @@ read == "branchData" && $1 ~/^[0-9]+$/ && $2 ~/^[0-9]+$/ {
 
 END {
     for (i = 1; i <= busCount; i++) {
-        if (busType[i] != 2) {
+        if (busTypes[busType[i]] == 3) {
             voltage[i] = "1.000";
         }
         delta[i] = 0;
 
-        printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+        printf "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
             i, busName[i], busTypes[busType[i]], voltage[i], delta[i],
-            pLoad[i], qLoad[i], pGen[i], qGen[i], qGMax[i], qGMin[i] >> busDataCSV;
+            pLoad[i], qLoad[i], pGen[i], qGen[i], qGMax[i], qGMin[i], gShunt[i], bShunt[i] >> busDataCSV;
     }
 
     for (i = 1; i <= branchCount; i++) {
