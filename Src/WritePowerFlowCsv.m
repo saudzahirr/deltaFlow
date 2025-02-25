@@ -42,36 +42,52 @@
 %}
 
 
-function WritePowerFlowCsv(P, Q, V)
-    % WritePowerFlowCsv exports power flow data to a CSV file.
+function WritePowerFlowCsv(busData)
+    % WritePowerFlowCsv writes bus power flow data to a CSV file,
+    % and prints each row using a debug message.
     %
-    % This function takes power flow results, including active and reactive power 
-    % injections, and voltage phasors, and writes them to a CSV file ("deltaFlow.csv"). 
-    % It also prints a formatted debug log for verification.
+    % Input:
+    %   busData - A numeric array with 12 columns arranged as:
+    %             [ID, Type, V, delta, Pg, Qg, Pl, Ql, Qgmax, Qgmin, Gs, Bs]
     %
-    % Inputs:
-    %   P - (Nx1 vector) Active power injections for N buses.
-    %   Q - (Nx1 vector) Reactive power injections for N buses.
-    %   V - (Nx1 vector) Complex voltage phasors at each bus.
+    % The output CSV file "deltaFlow.csv" will have the header:
+    %   ID,Type,V,delta,Pg,Qg,Pl,Ql,Qgmax,Qgmin,Gs,Bs
     %
+    % Debug output is printed via DEBUG(sprintf(...)).
 
-    global DEBUG
-    N = length(V);
+    global DEBUG;
 
     fid = fopen("deltaFlow.csv", "w");
+    if fid == -1
+        error("Cannot open deltaFlow.csv for writing");
+    end
 
-    fprintf(fid, "Bus ID,Voltage,Phase (deg),P,Q\n");
-    DEBUG(sprintf("%-10s %-25s %-15s %-15s %-15s %-15s", ...
-        "Bus ID", "Voltage Phasor", "Voltage", "Phase (deg)", "P", "Q"));
+    fprintf(fid, "ID,Type,V,delta,Pg,Qg,Pl,Ql,Qgmax,Qgmin,Gs,Bs\n");
+
+    DEBUG(sprintf("%-5s %-5s %-8s %-8s %-8s %-8s %-8s %-8s %-8s %-8s %-8s %-8s", ...
+        "ID", "Type", "V", "delta", "Pg", "Qg", "Pl", "Ql", "Qgmax", "Qgmin", "Gs", "Bs"));
+
+    N = size(busData, 1);
 
     for n = 1:N
-        magV = abs(V(n));
-        phaseV = angle(V(n)) * 180 / pi;
+        id    = busData(n, 1);
+        type  = busData(n, 2);
+        V     = busData(n, 3);
+        delta = busData(n, 4);
+        Pg    = busData(n, 5);
+        Qg    = busData(n, 6);
+        Pl    = busData(n, 7);
+        Ql    = busData(n, 8);
+        Qgmax = busData(n, 9);
+        Qgmin = busData(n, 10);
+        Gs    = busData(n, 11);
+        Bs    = busData(n, 12);
 
-        fprintf(fid, "%d,%.32f,%.32f,%.32f,%.32f\n", ...
-            n, magV, phaseV, P(n), Q(n));
-        DEBUG(sprintf("%-10d %-25s %-15.8f %-15.2f %-15.6f %-15.6f", ...
-            n, num2str(V(n)), magV, phaseV, P(n), Q(n)));
+        fprintf(fid, "%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n", ...
+            id, type, V, delta, Pg, Qg, Pl, Ql, Qgmax, Qgmin, Gs, Bs);
+
+        DEBUG(sprintf("%-5d %-5d %-8.3f %-8.3f %-8.3f %-8.3f %-8.3f %-8.3f %-8.3f %-8.3f %-8.3f %-8.3f", ...
+            id, type, V, delta, Pg, Qg, Pl, Ql, Qgmax, Qgmin, Gs, Bs));
     end
 
     fclose(fid);
