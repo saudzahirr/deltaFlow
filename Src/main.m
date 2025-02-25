@@ -69,12 +69,20 @@ switch methodChoice
     case 1
         INFO("Starting Gauss-Seidel method ...");
         [V, P, Q] = GaussSeidel(lineData, busData, maxIter, tolerance);
-        WritePowerFlowCsv(P, Q, V);
+        busData(:, 3) = abs(V);
+        busData(:, 4) = angle(V) * 180/pi;
+        busData(:, 5) = P + busData(:, 7);
+        busData(:, 6) = Q + busData(:, 8);
+        WritePowerFlowCsv(busData);
 
     case 2
         INFO("Starting Newton-Raphson method ...");
         [V, P, Q] = NewtonRaphson(lineData, busData, maxIter, tolerance);
-        WritePowerFlowCsv(P, Q, V);
+        busData(:, 3) = abs(V);
+        busData(:, 4) = angle(V) * 180/pi;
+        busData(:, 5) = P + busData(:, 7);
+        busData(:, 6) = Q + busData(:, 8);
+        WritePowerFlowCsv(busData);
 
     otherwise
         WARNING("Invalid choice. Please select either 1 for Gauss-Seidel or 2 for Newton-Raphson.");
