@@ -10,7 +10,7 @@
 #
 #                                deltaFlow
 #                        Power System Analysis Tool
-#                           Copyright (C) 2025
+#                           Copyright (c) 2025
 #--------------------------------------------------------------------------------
 # License
 #     This file is part of deltaFlow.

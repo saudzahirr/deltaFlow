@@ -9,7 +9,7 @@
 %
 %                                deltaFlow
 %                        Power System Analysis Tool
-%                           Copyright (C) 2025
+%                           Copyright (c) 2025
 %--------------------------------------------------------------------------------
 % License
 %     This file is part of deltaFlow.
@@ -55,9 +55,11 @@ function WritePowerFlowCsv(busData)
     %
     % Debug output is printed via DEBUG(sprintf(...)).
 
-    global DEBUG;
+    global DEBUG parentDir;
 
-    fid = fopen("deltaFlow.csv", "w");
+    csvPath = fullfile(parentDir, "deltaFlow.csv");
+
+    fid = fopen(csvPath, "w");
     if fid == -1
         error("Cannot open deltaFlow.csv for writing");
     end
