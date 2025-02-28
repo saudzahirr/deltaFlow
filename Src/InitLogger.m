@@ -9,7 +9,7 @@
 %
 %                                deltaFlow
 %                        Power System Analysis Tool
-%                           Copyright (C) 2025
+%                           Copyright (c) 2025
 %--------------------------------------------------------------------------------
 % License
 %     This file is part of deltaFlow.
@@ -79,7 +79,7 @@ function InitLogger()
     INFO("");
     INFO("                                deltaFlow");
     INFO("                        Power System Analysis Tool");
-    INFO("                           Copyright (C) 2025");
+    INFO("                           Copyright (c) 2025");
     INFO("--------------------------------------------------------------------------------");
 
 end

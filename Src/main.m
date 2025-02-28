@@ -9,7 +9,7 @@
 %
 %                                deltaFlow
 %                        Power System Analysis Tool
-%                           Copyright (C) 2025
+%                           Copyright (c) 2025
 %--------------------------------------------------------------------------------
 % License
 %     This file is part of deltaFlow.
@@ -59,10 +59,16 @@ tolerance = input("Enter the tolerance (e.g., 1E-16): ");
 busPath = input("Enter the path for the bus data file: ", "s");
 linePath = input("Enter the path for the line data file: ", "s");
 
+global parentDir;
+[parentDir, ~, ~] = fileparts(busPath);
+parentDir = fullfile(pwd, parentDir);
+
 busTable = readtable(busPath);
 lineTable = readtable(linePath);
 
-busData = [busTable.ID, busTable.Type, busTable.V, busTable.delta, busTable.Pg, busTable.Qg, busTable.Pl, busTable.Ql, busTable.Qgmax, busTable.Qgmin, busTable.Gs, busTable.Bs];
+busData = [busTable.ID,    busTable.Type, busTable.V,     busTable.delta, ...
+           busTable.Pg,    busTable.Qg,   busTable.Pl,    busTable.Ql,    ...
+           busTable.Qgmax, busTable.Qgmin, busTable.Gs,    busTable.Bs];
 lineData = [lineTable.From, lineTable.To, lineTable.R, lineTable.X, lineTable.G, lineTable.B, lineTable.a];
 
 switch methodChoice
