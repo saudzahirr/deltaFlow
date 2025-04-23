@@ -29,7 +29,7 @@
 #    along with deltaFlow.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Script
-#     cfdToCsv.awk
+#     cdfToCsv.awk
 #
 # Description
 #     Script to convert IEEE Common Data Format into structured CSV files for 

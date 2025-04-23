@@ -1,38 +1,56 @@
-## Matlab
-# Windows default autosave extension
-*.asv
+# Prerequisites
+*.d
 
-# OSX / *nix default autosave extension
-*.m~
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-# Compiled MEX binaries (all platforms)
-*.mex*
+# Precompiled Headers
+*.gch
+*.pch
 
-# Packaged app and toolbox files
-*.mlappinstall
-*.mltbx
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
 
-# Generated helpsearch folders
-helpsearch*/
+# Fortran module files
+*.mod
+*.smod
 
-# Simulink code generation folders
-slprj/
-sccprj/
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
 
-# Matlab code generation folders
-codegen/
+# Executables
+*.exe
+*.out
+*.app
 
-# Simulink autosave extension
-*.autosave
+# CMake Build
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeUserPresets.json
 
-# Simulink cache files
-*.slxc
+# Visual Studio Code
+settings.json
+*_properties.json
 
-# Octave session info
-octave-workspace
-
-
-## Miscellaneous files
-IEEE*BusTestCase/
+# Application
+deltaFlow
 *.log
-deltaFlow.csv
+mangling.H
+build/

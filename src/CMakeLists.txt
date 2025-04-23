@@ -1,6 +1,4 @@
-#!/bin/perl
-
-#---------------------------------*- perl -*-------------------------------------
+#---------------------------------*- cmake -*------------------------------------
 #
 #                                   /\\
 #                                  /  \\
@@ -9,7 +7,7 @@
 #                                =========
 #
 #                                deltaFlow
-#                        Power System Analysis Tool
+#                       Power System Analysis Tool
 #                           Copyright (c) 2025
 #--------------------------------------------------------------------------------
 # License
@@ -28,11 +26,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with deltaFlow.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Script
-#     deltaFlow
+# File
+#     CMakeLists.txt
 #
 # Description
-#     Perl script to execute deltaFlow MATLAB script in no-display mode.
+#     CMake build configuration for the deltaFlow project.
 #
 # Author
 #     Saud Zahir
@@ -41,6 +39,24 @@
 #     09 December 2024
 #--------------------------------------------------------------------------------
 
+file(GLOB SUBDIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
 
-system("matlab -nodisplay -r \"run('Src/main.m'); exit;\"") == 0
-    or die "Failed to execute MATLAB script: $!";
+foreach(SUBDIR ${SUBDIRS})
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${SUBDIR})
+        add_subdirectory(${SUBDIR})
+    endif()
+endforeach()
+
+#--------------------------------------------------------------------------------#
+REGISTER_GLOBAL_SOURCES_AND_INCLUDES(SOURCES INCLUDES)
+#--------------------------------------------------------------------------------#
+
+get_property(SOURCES GLOBAL PROPERTY SOURCES)
+get_property(INCLUDES GLOBAL PROPERTY INCLUDES)
+get_property(FORTRAN_SOURCES GLOBAL PROPERTY FORTRAN_SOURCES)
+
+include_directories(${INCLUDES})
+
+add_library(SubroutineObject OBJECT ${FORTRAN_SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} $<TARGET_OBJECTS:SubroutineObject>)
+target_link_libraries(${PROJECT_NAME} fmt)
