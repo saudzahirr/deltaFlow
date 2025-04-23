@@ -36,27 +36,9 @@
 #     Saud Zahir
 #
 # Date
-#     09 December 2024
+#     13 December 2024
 #--------------------------------------------------------------------------------
-
-file(GLOB SUBDIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
-
-foreach(SUBDIR ${SUBDIRS})
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${SUBDIR})
-        add_subdirectory(${SUBDIR})
-    endif()
-endforeach()
 
 #--------------------------------------------------------------------------------#
 REGISTER_GLOBAL_SOURCES_AND_INCLUDES(SOURCES INCLUDES)
 #--------------------------------------------------------------------------------#
-
-get_property(SOURCES GLOBAL PROPERTY SOURCES)
-get_property(INCLUDES GLOBAL PROPERTY INCLUDES)
-get_property(FORTRAN_SOURCES GLOBAL PROPERTY FORTRAN_SOURCES)
-
-include_directories(${INCLUDES})
-
-add_library(SubroutineObject OBJECT ${FORTRAN_SOURCES})
-add_executable(${PROJECT_NAME} ${SOURCES} $<TARGET_OBJECTS:SubroutineObject>)
-target_link_libraries(${PROJECT_NAME} fmt)

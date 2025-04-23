@@ -33,45 +33,30 @@ Date
     09 December 2024
 \*---------------------------------------------------------------------------*/
 
+#ifndef CMD_H
+#define CMD_H
+
+#include <cstring>
+#include <iostream>
 #include <string>
+#include "logger.H"
+#include "utils.H"
 
-#include "cmd.H"
-#include "config.H"
-#include "algorithms.H"
-#include "cdfReader.H"
+namespace Utilities {
+    struct Options {
+        Options(int argc, char* argv[]);
 
+        std::string getSimFile() const;
 
-int main(int argc, char* argv[]) {
-    Utilities::Options opts(argc, argv);
-    std::string simFile = opts.getSimFile();
-    Config config(simFile);
+    private:
+        std::string m_versionNumber;
+        std::string m_simFile;
+        bool gui = false;
 
-    switch (config.getAnalysisType()) {
-        case AnalysisType::STATIC:
-            switch (config.getFormat()) {
-                case Format::CDF: {
-                    std::string name = config.getIncludeFile();
-                    Reader* reader = new CommonDataFormatReader(name);
-                    PowerSystemData pData = reader->read();
-                    DEBUG("Number of buses: {}", pData.N);
-                    DEBUG("VOLTAGE :: {}", pData.voltage[0]);
-                    // solve(config, pData);
-
-                    for (int i = 0; i < pData.N; ++i) {
-                        auto& v = pData.V[i];
-                        DEBUG("v[{}] = {}", i, std::abs(v));
-                    }
-                    delete reader;
-                }
-                break;
-            }
-
-        case AnalysisType::TRANSIENT:
-            break;
-
-        default:
-            break;
-    }
-
-    return 0;
+        void parseArguments(int argc, char* argv[]);
+        void displayHelp() const;
+        void displayVersion() const;
+    };
 }
+
+#endif

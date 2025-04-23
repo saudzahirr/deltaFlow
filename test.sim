@@ -1,0 +1,15 @@
+$ IEEE 14 Bus
+
+IN FORMAT
+CDF
+
+INCLUDE
+data/IEEE/ieee14.cdf
+
+ANALYSIS
+$ TYPE (16)       Method (16)       Tolerance (8)  Iteration (8)
+STATIC            GAUSS             1E-16          1000
+
+OUT FORMAT
+ASCII
+BIN
