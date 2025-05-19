@@ -1,0 +1,3 @@
+#define CMake_VERSION "@CMAKE_VERSION@"
+#define gcc_VERSION "@CMAKE_CXX_COMPILER_VERSION@"
+#define deltaFlow_VERSION "@PROJECT_VERSION@"

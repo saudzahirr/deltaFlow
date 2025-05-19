@@ -1,77 +1,50 @@
-/*---------------------------------------------------------------------------*\
-
-                                  /\\
-                                 /  \\
-                                /    \\
-                               /      \\
-                               =========
-
-                               deltaFlow
-                      Power System Analysis Tool
-                          Copyright (c) 2025
---------------------------------------------------------------------------------
-License
-    This file is part of deltaFlow.
-
-   deltaFlow is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   deltaFlow is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with deltaFlow.  If not, see <https://www.gnu.org/licenses/>.
-
-Author
-    Saud Zahir
-
-Date
-    09 December 2024
-\*---------------------------------------------------------------------------*/
-
-#include <string>
-
-#include "cmd.H"
-#include "config.H"
-#include "algorithms.H"
-#include "cdfReader.H"
-
+#include "Argparse.H"
+#include "Logger.H"
+#include "Reader.H"
+#include "Writer.H"
+#include "Admittance.H"
+#include "NewtonRaphson.H"
+#include "GaussSeidel.H"
 
 int main(int argc, char* argv[]) {
-    Utilities::Options opts(argc, argv);
-    std::string simFile = opts.getSimFile();
-    Config config(simFile);
+    ArgumentParser opts(argc, argv);
+    DEBUG("Bus Data csv :: {}", opts.getBusDataCsv());
+    DEBUG("Branch Data csv :: {}", opts.getBranchDataCsv());
 
-    switch (config.getAnalysisType()) {
-        case AnalysisType::STATIC:
-            switch (config.getFormat()) {
-                case Format::CDF: {
-                    std::string name = config.getIncludeFile();
-                    Reader* reader = new CommonDataFormatReader(name);
-                    PowerSystemData pData = reader->read();
-                    DEBUG("Number of buses: {}", pData.N);
-                    DEBUG("VOLTAGE :: {}", pData.voltage[0]);
-                    // solve(config, pData);
+    BusData busData;
+    BranchData branchData;
 
-                    for (int i = 0; i < pData.N; ++i) {
-                        auto& v = pData.V[i];
-                        DEBUG("v[{}] = {}", i, std::abs(v));
-                    }
-                    delete reader;
-                }
-                break;
-            }
+    Solver solver = opts.getSolver();
+    int maxIter = opts.getMaxIterations();
+    double tolerance = opts.getTolerance();
 
-        case AnalysisType::TRANSIENT:
+    readBusDataCSV(opts.getBusDataCsv(), busData);
+    readBranchDataCSV(opts.getBranchDataCsv(), branchData);
+
+    auto Y = computeAdmittanceMatrix(busData, branchData);
+
+    switch (solver) {
+        case Solver::GaussSeidel: {
+            double relaxation_coeff = opts.getRelaxationCoefficient();
+            GaussSeidel(Y, busData, maxIter, tolerance, relaxation_coeff);
             break;
+        }
 
-        default:
+        case Solver::NewtonRaphson: {
+            NewtonRaphson(Y, busData, maxIter, tolerance);
             break;
+        }
+
+        default: {
+            NewtonRaphson(Y, busData, maxIter, tolerance);
+            break;
+        }
     }
+
+    dispBusData(busData);
+    dispLineFlow(busData, branchData, Y);
+
+    writeOutputCSV(busData);
 
     return 0;
 }
