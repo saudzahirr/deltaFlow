@@ -33,44 +33,67 @@ Date
     09 December 2024
 \*---------------------------------------------------------------------------*/
 
-#include <string>
-
-#include "cmd.H"
-#include "config.H"
+#include "argparse.H"
+#include "busDataReader.H"
+#include "branchDataReader.H"
 #include "algorithms.H"
-#include "cdfReader.H"
 
 
 int main(int argc, char* argv[]) {
-    Utilities::Options opts(argc, argv);
-    std::string simFile = opts.getSimFile();
-    Config config(simFile);
+    ArgumentParser opts(argc, argv);
+    ComplexVector Y, V;
+    DoubleVector P, Q, Qmax, Qmin;
+    IntegerVector busType;
+    INTEGER N;
+    INTEGER maxIter = opts.getMaxIterations();
+    DOUBLE tolerance = opts.getTolerance();
+    DOUBLE omega = 1.0;
+    INTEGER iterOut = 0;
+    DOUBLE error = 0.0;
 
-    switch (config.getAnalysisType()) {
-        case AnalysisType::STATIC:
-            switch (config.getFormat()) {
-                case Format::CDF: {
-                    std::string name = config.getIncludeFile();
-                    Reader* reader = new CommonDataFormatReader(name);
-                    PowerSystemData pData = reader->read();
-                    DEBUG("Number of buses: {}", pData.N);
-                    DEBUG("VOLTAGE :: {}", pData.voltage[0]);
-                    // solve(config, pData);
+    try {
+        BusDataCsvReader busReader(opts.getBusDataCsv());
+        busReader.read();
 
-                    for (int i = 0; i < pData.N; ++i) {
-                        auto& v = pData.V[i];
-                        DEBUG("v[{}] = {}", i, std::abs(v));
-                    }
-                    delete reader;
-                }
-                break;
-            }
+        BranchDataCsvReader branchReader(opts.getBranchDataCsv());
+        branchReader.read();
 
-        case AnalysisType::TRANSIENT:
+        Y = branchReader.Y(busReader);
+        V = busReader.V();
+        P = busReader.P();
+        Q = busReader.Q();
+        N = V.size();
+        Qmax = busReader.getQGenMax();
+        Qmin = busReader.getQGenMin();
+        busType = busReader.getBusType();
+
+    } catch (const std::exception& e) {
+        ERROR("{}", e.what());
+    }
+
+    switch (opts.getSolverType()) {
+        case Solver::GAUSS:
+            GAUSS_SEIDEL(V.data(),
+                         P.data(),
+                         Q.data(),
+                         Y.data(),
+                         &N, &maxIter,
+                         &tolerance);
             break;
-
+        case Solver::NEWTON:
+            NEWTON_RAPHSON(V.data(),
+                           P.data(),
+                           Q.data(),
+                           Y.data(),
+                           &N, &maxIter,
+                           &tolerance);
+            break;
         default:
             break;
+    }
+
+    forAll(i, V) {
+        DEBUG("{} {} {} {}", std::abs(V[i]), (180.0 / M_PI) * std::arg(V[i]), P[i], Q[i]);
     }
 
     return 0;

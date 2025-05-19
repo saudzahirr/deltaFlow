@@ -4,6 +4,8 @@
 #include "define.H"
 #include "types.H"
 #include "mangling.H"
+#include "config.H"
+#include "baseReader.H"
 
 fortran subroutine API_GAUSS_SEIDEL(DOUBLE_COMPLEX *V, DOUBLE *P, DOUBLE *Q, DOUBLE_COMPLEX *Y, INTEGER *N, INTEGER *MAXITER, DOUBLE *TOL);
 
@@ -12,5 +14,7 @@ fortran subroutine API_NEWTON_RAPHSON(DOUBLE_COMPLEX *V, DOUBLE *P, DOUBLE *Q, D
 void GAUSS_SEIDEL(DOUBLE_COMPLEX *V, DOUBLE *P, DOUBLE *Q, DOUBLE_COMPLEX *Y, INTEGER *N, INTEGER *MAXITER, DOUBLE *TOL);
 
 void NEWTON_RAPHSON(DOUBLE_COMPLEX *V, DOUBLE *P, DOUBLE *Q, DOUBLE_COMPLEX *Y, INTEGER *N, INTEGER *MAXITER, DOUBLE *TOL);
+
+void solve(Config&, PowerSystemData&);
 
 #endif

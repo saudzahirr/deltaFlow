@@ -2,19 +2,12 @@
 #define UTILS_H
 
 #include <string>
-#include "define.H"
 
 namespace Utilities {
     inline bool endswith(const std::string& str, const std::string& suffix) {
         if (suffix.size() > str.size()) return false;
         return str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
-    }
-
-    inline void toupper(std::string& str) {
-        forEach(c, str) {
-            c = std::toupper(static_cast<unsigned char>(c));
-        }
-    }
+    };
 }
 
 #endif

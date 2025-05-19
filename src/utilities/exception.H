@@ -3,19 +3,17 @@
 
 #include <exception>
 #include <string>
-#include <iostream>
-#include <csignal>
-#include <unistd.h>
+#include "logger.H"
 
-class SignalException : public std::exception {
-private:
-    std::string message;
+#define RuntimeError(msg, ...) Exception(fmt::format(FMT_STRING(msg), ##__VA_ARGS__))
 
-public:
-    SignalException(const std::string& msg);
-    const char* what() const noexcept override;
+class Exception : public std::exception {
+    public:
+        Exception(const std::string&);
+        const char* what() const noexcept override;
+
+    private:
+        std::string errorMessage;
 };
-
-extern "C" void signalHandler(int signal);
 
 #endif // EXCEPTION_H

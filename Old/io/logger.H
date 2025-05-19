@@ -21,7 +21,6 @@ enum class Level : uint8_t {
 #define WARN(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::WARN)
 #define ERROR(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::ERROR)
 #define CRITICAL(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::CRITICAL)
-#define MESSAGE(msg, ...) fmt::print("{}\n", fmt::format(FMT_STRING(msg), ##__VA_ARGS__))
 
 class Logger final {
     public:

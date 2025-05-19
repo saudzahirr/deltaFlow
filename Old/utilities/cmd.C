@@ -37,11 +37,11 @@ Date
 
 using namespace Utilities;
 
-Options::Options(int argc, char* argv[]) {
+ArgumentParser::ArgumentParser(int argc, char* argv[]) {
     parseArguments(argc, argv);
 }
 
-void Options::parseArguments(int argc, char* argv[]) {
+void ArgumentParser::parseArguments(int argc, char* argv[]) {
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
 
@@ -66,14 +66,14 @@ void Options::parseArguments(int argc, char* argv[]) {
         }
     }
 
-    if (m_simFile.empty() and not endsWith(m_simFile, ".sim")) {
+    if (m_simFile.empty() and not endswith(m_simFile, ".sim")) {
         ERROR("Error: Simulation file (-s, --sim) is required.");
         displayHelp();
         exit(1);
     }
 }
 
-void Options::displayHelp() const {
+void ArgumentParser::displayHelp() const {
     std::cout << R"(
 Usage:
   deltaFlow [OPTIONS]
@@ -91,10 +91,10 @@ Note:
 )" << std::endl;
 }
 
-std::string Options::getSimFile() const {
+std::string ArgumentParser::getSimFile() const {
     return m_simFile;
 }
 
-void Options::displayVersion() const {
+void ArgumentParser::displayVersion() const {
     std::cout << "v0.0.1" << std::endl;
 }

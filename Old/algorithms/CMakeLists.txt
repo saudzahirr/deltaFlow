@@ -9,7 +9,7 @@ FortranCInterface_HEADER(
         SYMBOLS            GAUSS_SEIDEL NEWTON_RAPHSON
 )
 
-file(GLOB FORTRAN_SOURCES *.f)
+file(GLOB FORTRAN_SOURCES *.F)
 set_property(GLOBAL APPEND PROPERTY FORTRAN_SOURCES "${FORTRAN_SOURCES}")
 
 #--------------------------------------------------------------------------------#
