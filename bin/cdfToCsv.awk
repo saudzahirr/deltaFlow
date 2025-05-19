@@ -14,28 +14,9 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
 #
-#    deltaFlow is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with deltaFlow.  If not, see <https://www.gnu.org/licenses/>.
-#
-# Script
-#     cdfToCsv.awk
-#
-# Description
-#     Script to convert IEEE Common Data Format into structured CSV files for 
-#     power flow analysis in the deltaFlow project. It processes bus and branch
-#     data, ensuring correct formatting and consistency.
-#
-# Author
-#     Saud Zahir
-#
-# Date
-#     09 December 2024
-#--------------------------------------------------------------------------------
+# You should have received a copy of the GNU Lesser General Public
+# License along with deltaFlow; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
 BEGIN {
