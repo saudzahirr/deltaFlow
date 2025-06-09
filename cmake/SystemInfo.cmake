@@ -1,0 +1,20 @@
+macro(SYSTEM_INFO)
+    message(STATUS "System Name:: ${CMAKE_SYSTEM_NAME}")
+    message(STATUS "Host System Processor:: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    message(STATUS "System Processor:: ${CMAKE_SYSTEM_PROCESSOR}")
+
+    message(STATUS "CMake Version:: ${CMAKE_VERSION}")
+    message(STATUS "CMake Generator:: ${CMAKE_GENERATOR}")
+    message(STATUS "CMake Generator Platform:: ${CMAKE_GENERATOR_PLATFORM}")
+    message(STATUS "CMake Build Tool:: ${CMAKE_MAKE_PROGRAM}")
+    message(STATUS "Operating System:: ${CMAKE_SYSTEM}")
+    message(STATUS "Operating System Version:: ${CMAKE_SYSTEM_VERSION}")
+    message(STATUS "Processor Architecture:: ${CMAKE_SYSTEM_PROCESSOR}")
+
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        message(STATUS "System Architecture: 64-bit")
+    else()
+        message(STATUS "System Architecture: 32-bit")
+    endif()
+
+endmacro()

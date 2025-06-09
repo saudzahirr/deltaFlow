@@ -1,38 +1,88 @@
-## Matlab
-# Windows default autosave extension
-*.asv
+# ---------------- C++ ----------------
 
-# OSX / *nix default autosave extension
-*.m~
+# Prerequisites
+*.d
 
-# Compiled MEX binaries (all platforms)
-*.mex*
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-# Packaged app and toolbox files
-*.mlappinstall
-*.mltbx
+# Precompiled Headers
+*.gch
+*.pch
 
-# Generated helpsearch folders
-helpsearch*/
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
 
-# Simulink code generation folders
-slprj/
-sccprj/
+# Fortran module files
+*.mod
+*.smod
 
-# Matlab code generation folders
-codegen/
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
 
-# Simulink autosave extension
-*.autosave
-
-# Simulink cache files
-*.slxc
-
-# Octave session info
-octave-workspace
+# Executables
+*.exe
+*.out
+*.app
 
 
-## Miscellaneous files
-IEEE*BusTestCase/
+# ---------------- CMake ----------------
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeUserPresets.json
+
+# CLion
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#cmake-build-*
+
+
+# ---------------- Doxygen ----------------
+
+
+# ---------------- Others ----------------
+
 *.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
+*.rej
+*.cache
+*.DS_Store
+ehthumbs.db
+Thumbs.db
+Version.H
+deltaFlow
 deltaFlow.csv
+*.csv~
+*.zip
+*.tar.gz
+*.tgz
+*.7z
+*.gz
+*.rar
+latex/
+html/
+.vscode/**/*.json
+.vscode/**/*.code-workspace
