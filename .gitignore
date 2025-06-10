@@ -35,6 +35,7 @@
 
 
 # ---------------- CMake ----------------
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -57,6 +58,20 @@ CMakeUserPresets.json
 
 
 # ---------------- Doxygen ----------------
+
+
+
+# ---------------- Catch2 ----------------
+
+/bin/test_*
+/bin/Test*
+/build/test/*
+
+
+# ---------------- Visual Studio Code ----------------
+
+.vscode/**/*.json
+.vscode/**/*.code-workspace
 
 
 # ---------------- Others ----------------
@@ -82,7 +97,3 @@ deltaFlow.csv
 *.7z
 *.gz
 *.rar
-latex/
-html/
-.vscode/**/*.json
-.vscode/**/*.code-workspace

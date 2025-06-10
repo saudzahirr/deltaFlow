@@ -31,8 +31,9 @@
 #define READER_H
 
 #include <Eigen/Dense>
-#include <vector>
+
 #include <string>
+#include <vector>
 
 /**
   * @struct BusData

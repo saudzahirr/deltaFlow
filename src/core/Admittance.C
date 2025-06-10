@@ -1,8 +1,8 @@
-#include "Admittance.H"
-#include "Reader.H"
-#include "Logger.H"
-
 #include <complex>
+
+#include "Admittance.H"
+#include "Logger.H"
+#include "Reader.H"
 
 Eigen::MatrixXcd computeAdmittanceMatrix(const BusData& busData, const BranchData& branchData) {
     int nLine = branchData.From.size();

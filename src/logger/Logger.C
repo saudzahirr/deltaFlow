@@ -20,40 +20,42 @@ Logger::~Logger() {
 }
 
 void Logger::log(const std::string& msg, const Level& level) {
-    std::string levelString;
+    std::string levelStr;
     m_Level = level;
+    fmt::color levelColor = fmt::color::white;
+
     switch (m_Level) {
         case Level::DEBUG:
-            levelString = "DEBUG: ";
-            break;
+            levelStr = "DEBUG"; levelColor = fmt::color::light_blue; break;
         case Level::INFO:
-            levelString = "INFO: ";
-            break;
+            levelStr = "INFO"; levelColor = fmt::color::green; break;
         case Level::WARN:
-            levelString = "WARN: ";
-            break;
+            levelStr = "WARN"; levelColor = fmt::color::yellow; break;
         case Level::ERROR:
-            levelString = "ERROR: ";
-            break;
+            levelStr = "ERROR"; levelColor = fmt::color::orange_red; break;
         case Level::CRITICAL:
-            levelString = "CRITICAL: ";
-            break;
-        case Level::NOTSET:
+            levelStr = "CRITICAL"; levelColor = fmt::color::red; break;
         default:
-            levelString = "LOG: ";
-            break;
+            levelStr = "LOG"; break;
     }
 
+    auto now = std::time(nullptr);
+    auto timestamp = fmt::format("{:%d-%m-%Y %H-%M-%S}", fmt::localtime(now));
+
     std::string logMessage = fmt::format(
-        "{:%d-%m-%Y %H-%M-%S} - {:<8} - {}\n",
-        fmt::localtime(std::time(nullptr)),
-        levelString,
-        msg
+        "{} - {:<8} - {}\n", timestamp, levelStr, msg
     );
 
     if (file.is_open()) {
         file << logMessage;
     }
+
+    logMessage = fmt::format(
+        "{} - {} - {}\n",
+        timestamp,
+        fmt::format(fg(levelColor) | fmt::emphasis::bold, "{:<8}", levelStr),
+        msg
+    );
 
     fmt::print("{}", logMessage);
 }

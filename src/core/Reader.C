@@ -1,10 +1,9 @@
-#include "Reader.H"
-#include "Logger.H"
-
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
+#include "Logger.H"
+#include "Reader.H"
 
 bool readBusDataCSV(const std::string& busCsvFilepath, BusData& busData) {
     std::ifstream file(busCsvFilepath);

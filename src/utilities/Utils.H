@@ -26,9 +26,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <string>
 #include <iomanip>
+#include <string>
+
 #include <Eigen/Dense>
+
 #include "Define.H"
 #include "Logger.H"
 

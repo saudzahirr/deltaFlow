@@ -43,8 +43,10 @@
 #ifndef GAUSS_SEIDEL_H
 #define GAUSS_SEIDEL_H
 
-#include "Reader.H"
 #include <Eigen/Dense>
+
+class BranchData;
+class BusData;
  
 /**
   * @brief Solves the power flow equations using the Gauss-Seidel iterative method.

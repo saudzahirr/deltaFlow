@@ -1,10 +1,10 @@
-#include "GaussSeidel.H"
-#include "Logger.H"
-#include "Utils.H"
-
-#include <Eigen/Dense>
 #include <complex>
 #include <iostream>
+
+#include "GaussSeidel.H"
+#include "Logger.H"
+#include "Reader.H"
+#include "Utils.H"
 
 bool GaussSeidel(const Eigen::MatrixXcd& Y, BusData& busData, int maxIter, double tolerance, double omega) {
     int N = Y.rows();

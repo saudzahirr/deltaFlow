@@ -40,9 +40,10 @@
 #ifndef NEWTONRAPHSON_H
 #define NEWTONRAPHSON_H
 
-#include "Reader.H"
-
 #include <Eigen/Dense>
+
+class BranchData;
+class BusData;
 
 /**
   * @brief Solves the power flow equations using the Newton-Raphson iterative method.

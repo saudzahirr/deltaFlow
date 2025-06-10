@@ -32,11 +32,12 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <iostream>
-#include <fstream>
-#include <string>
 #include <chrono>
 #include <fmt/chrono.h>
+#include <fmt/color.h>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 /**
   * @enum Level
