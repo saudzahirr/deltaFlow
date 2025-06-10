@@ -75,9 +75,11 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[computeAdmittanceMat
     double tol = 1e-3;
     for (int i = 0; i < nBus; ++i) {
         for (int j = 0; j < nBus; ++j) {
-            DEBUG("Mismatch at ({}, {})", i, j);
-            REQUIRE(std::abs(Y(i, j).real() - Y_ref(i, j).real()) < tol);
-            REQUIRE(std::abs(Y(i, j).imag() - Y_ref(i, j).imag()) < tol);
+            auto x = std::abs(Y(i, j).real() - Y_ref(i, j).real());
+            auto y = std::abs(Y(i, j).imag() - Y_ref(i, j).imag());
+            DEBUG("Mismatch at ({}, {}): {} + {}i", i, j, x, y);
+            REQUIRE(x < tol);
+            REQUIRE(y < tol);
         }
     }
 }

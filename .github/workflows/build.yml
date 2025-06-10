@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  gcc-pipeline:
+    name: GCC Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies (Perl, CMake, Doxygen, GCC)
+      run: sudo apt-get update && sudo apt-get install -y perl cmake doxygen gcc g++
+
+    - name: Build deltaFlow (with tests)
+      run: perl ./bin/build.pl -t
+
+    - name: Run CMake tests
+      run: ctest --output-on-failure
+
+    - name: Tests
+      run: perl ./bin/test.pl
+
+    - name: Generate documentation
+      run: doxygen Doxyfile
+
+    - name: Deploy docs to GitHub Pages
+      if: github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/html
+        publish_branch: gh-pages
