@@ -14,14 +14,46 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y perl cmake doxygen gcc g++
+    # Caching APT
+    - name: Cache APT packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          /var/cache/apt
+          /var/lib/apt/lists
+        key: ${{ runner.os }}-apt-${{ hashFiles('**/bin/build.pl') }}
+        restore-keys: ${{ runner.os }}-apt-
+
+    - name: Install dependencies (Perl, CMake, Doxygen, GCC)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y perl cmake doxygen gcc g++
+
+    # Caching CMake build artifacts and FetchContent
+    - name: Cache CMake and FetchContent
+      uses: actions/cache@v4
+      with:
+        path: |
+          build
+          ~/.cache/cmake
+        key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-cmake-
+
+    - name: Create build directory
+      run: cmake -E make_directory build
+
+    - name: Run CMake configuration
+      working-directory: ./build
+      run: cmake .. -DBUILD_TEST=ON
 
     - name: Build deltaFlow
-      run: perl ./bin/build.pl -t
+      working-directory: ./build
+      run: cmake --build . --parallel
 
-    - name: CMake Tests
+    - name: Run CMake tests
+      working-directory: ./build
       run: ctest --output-on-failure
 
-    - name: Tests
+    - name: Tests (if needed separately)
       run: perl ./bin/test.pl
