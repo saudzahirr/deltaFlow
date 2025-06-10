@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "*.log": "log",
-        "*.C": "cpp",
-        "*.H": "cpp",
-        "*.in": "cpp"
-    },
-    "C_Cpp.errorSquiggles": "disabled"
-}
