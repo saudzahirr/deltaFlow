@@ -22,9 +22,9 @@
  * @file
  * @brief Declaration of the Gauss-Seidel load flow solver for power system analysis.
  *
- * The Gauss-Seidel method is an iterative algorithm to solve the power flow equations for bus voltages in a power system.
- * It uses the bus admittance matrix $$ Y_{bus} $$ and iteratively updates the bus voltages $$ V $$
- * to satisfy the power balance equations:
+ * The Gauss-Seidel method is an iterative algorithm to solve the power flow equations
+ * for bus voltages in a power system. It uses the bus admittance matrix $$ Y_{bus} $$ and iteratively
+ * updates the bus voltages $$ V $$ to satisfy the power balance equations:
  *
  * $$ S_i = V_i \sum_{j=1}^N Y_{ij}^* V_j^* $$
  *
@@ -33,11 +33,40 @@
  * - $$ V_i $$ is the voltage at bus $$ i $$
  * - $$ Y_{ij} $$ is the element of the admittance matrix
  *
- * The Gauss-Seidel voltage update for the \( k \)-th iteration is:
+ * The Gauss-Seidel voltage update for the k-th iteration is:
  * 
  * $$ V_i^{(k+1)} = \frac{1}{Y_{ii}} \left( \frac{S_i^*}{V_i^{*(k)}} - \sum_{j=1, j \neq i}^N Y_{ij} V_j^{(k+1 \text{ or } k)} \right) $$
  *
- * The process continues until the changes in bus voltages are within a specified tolerance or the maximum number of iterations is reached.
+ * For voltage-controlled buses (PV buses), the reactive power injection $$ Q_k $$ is unknown initially
+ * but can be computed at iteration i by:
+ * 
+ * $$ Q_k^{(i)} = V_k^{(i)} \sum_{n=1}^N |Y_{kn}| V_n^{(i)} \sin \left( \delta_k^{(i)} - \delta_n^{(i)} - \theta_{kn} \right) $$
+ *
+ * The total reactive power generation at bus k is:
+ * 
+ * $$ Q_{Gk} = Q_k + Q_{Lk} $$
+ *
+ * where $$( Q_{Lk} )$$ is the reactive load demand at the bus.
+ *
+ * If the calculated $$( Q_{Gk} )$$ remains within its specified limits (e.g., $$ Q_{Gk}^{min} \leq Q_{Gk} \leq Q_{Gk}^{max} $$),
+ * the voltage magnitude $$ V_k $$ is fixed at its specified value, and only the voltage angle $$ \delta_k $$ is updated
+ * using the Gauss-Seidel formula.
+ * This means:
+ * 
+ * - The updated voltage magnitude $$ V_k^{(i+1)} $$ is set to the specified magnitude,
+ * - Only the angle $$ \delta_k^{(i+1)} $$ changes according to the iterative update.
+ *
+ * If $$( Q_{Gk} )$$ exceeds its limits during any iteration, the bus type is switched from
+ * voltage-controlled (PV) to load bus (PQ), with $$ Q_{Gk} $$ fixed at the violated limit (either $$ Q_{Gk}^{max} $$ or $$ Q_{Gk}^{min} $$).
+ * Under this condition, the voltage magnitude $$ V_k $$ is no longer fixed and is recalculated by the load flow program.
+ *
+ * To accelerate convergence, a relaxation (or acceleration) coefficient $$ \omega $$ (typically $$(0 < \omega \leq 1) $$)
+ * can be applied to the voltage update:
+ * 
+ * $$ V_i^{(k+1)} = \omega \times V_i^{(k+1)} + (1 - \omega) \times V_i^{(k)} $$
+ *
+ * The iteration proceeds until the maximum change in bus voltages between iterations is below a specified tolerance,
+ * or the maximum number of iterations is reached.
  */
 
 #ifndef GAUSS_SEIDEL_H

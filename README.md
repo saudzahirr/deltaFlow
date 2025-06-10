@@ -1,64 +1,68 @@
 # deltaFlow
 
-`deltaFlow` is a command-line tool for solving the power flow problem. It reads bus and branch data from CSV files and computes the steady-state power flow using numerical methods.
+**deltaFlow** is a command-line tool that solves steady-state power flow problems using numerical methods like Gauss-Seidel and Newton-Raphson. It reads input from CSV files for bus and branch data.
 
-## Build Instructions
+---
 
-Requires a C++17-compatible compiler.
+## 🔧 Build Instructions
 
-To build the project, run:
+Requires: A C++17-compatible compiler and CMake.
+
+Build the project with:
 
 ```sh
-./bin/build.pl
+./bin/build.pl -t   # Run build and tests
 ```
 
-## Usage
+Other options:
+
+* `-b`, `--build`: Build only (no tests)
+* `-d`, `--doc`: Generate documentation (requires Doxygen)
+
+---
+
+## 🚀 Usage
 
 ```sh
 ./deltaFlow [OPTIONS] <method>
 ```
 
-### Required Arguments
+### Required:
 
-* `-b`, `--bus <file>`: Path to the bus data CSV file
-* `-l`, `--branch <file>`: Path to the branch data CSV file
-* `<method>`: Power flow solver to use — either `gauss-seidel` or `newton-raphson`
+* `-b`, `--bus <file>`: Bus data CSV
+* `-l`, `--branch <file>`: Branch data CSV
+* `<method>`: Power flow method (`gauss-seidel` or `newton-raphson`)
 
-### Optional Arguments
+### Optional:
 
 * `-t`, `--tolerance <value>`: Convergence tolerance (default: `1E-8`)
-* `-m`, `--max-iterations <int>`: Maximum number of iterations (default: `1024`)
-* `-r`, `--relaxation <value>`: Relaxation factor for Gauss-Seidel method (default: `1.0`; ignored for Newton-Raphson)
-* `-h`, `--help`: Display help information and exit
-* `-v`, `--version`: Show version information and exit
+* `-m`, `--max-iterations <int>`: Max iterations (default: `1024`)
+* `-r`, `--relaxation <value>`: Relaxation factor (Gauss-Seidel only, default: `1.0`)
+* `-h`, `--help`: Show help
+* `-v`, `--version`: Show version
 
-## Examples
+---
+
+## 🧪 Examples
 
 ```sh
-./deltaFlow -b bus.csv -l branch.csv gauss-seidel
+./deltaFlow -b data/bus.csv -l data/line.csv gauss-seidel
+./deltaFlow --bus data/bus.csv --line data/line.csv newton-raphson
 ```
 
-```sh
-./deltaFlow --bus bus.csv --branch branch.csv newton-raphson
-```
+---
 
-## Notes
+## 📌 Notes
 
-* Both bus and branch files must be provided.
-* The `--relaxation` option applies only to the Gauss-Seidel method.
+* Both bus and branch files are required.
+* `--relaxation` is ignored with Newton-Raphson.
 
-## Version Information
+---
 
-To check the version:
+## 📄 Documentation
 
-```sh
-./deltaFlow --version
-```
-
-## Help
-
-To view help information:
+Generate with:
 
 ```sh
-./deltaFlow --help
+./bin/build.pl -d
 ```

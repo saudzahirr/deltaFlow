@@ -59,6 +59,7 @@ CMakeUserPresets.json
 
 # ---------------- Doxygen ----------------
 
+docs/html/
 
 
 # ---------------- Catch2 ----------------
@@ -66,6 +67,7 @@ CMakeUserPresets.json
 /bin/test_*
 /bin/Test*
 /build/test/*
+**/catch2-*
 
 
 # ---------------- Visual Studio Code ----------------
