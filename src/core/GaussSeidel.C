@@ -33,6 +33,22 @@ bool GaussSeidel(const Eigen::MatrixXcd& Y, BusData& busData, int maxIter, doubl
     int iteration = 0;
     double error = std::numeric_limits<double>::infinity();
 
+    if (omega <= 0.0 || omega >= 2.0) {
+        WARN("Invalid input: Relaxation coefficient must be between 0 and 2.");
+        DEBUG("Setting Relaxation coefficient to 1.");
+        omega = 1.0;
+    }
+
+    if (omega < 1.0) {
+        CRITICAL("Under-relaxation enabled (omega < 1), this will slow down convergence.");
+    }
+    else if (omega == 1.0) {
+        DEBUG("Standard Gauss-Seidel enabled (omega = 1).");
+    }
+    else if (omega > 1.0) {
+        DEBUG("Over-relaxation enabled (omega > 1), this will accelerate convergence.");
+    }
+
     DEBUG("Relaxation Coefficient :: {}", omega);
 
     while (error >= tolerance && iteration < maxIter) {
