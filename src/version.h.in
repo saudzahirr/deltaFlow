@@ -1,3 +1,56 @@
+/*
+ * Copyright (c) 2024 saudzahirr
+ *
+ * This file is part of deltaFlow.
+ *
+ * deltaFlow is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * deltaFlow is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with deltaFlow; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+/**
+ * @file
+ * @brief Defines build version macros for deltaFlow and its dependencies.
+ *
+ * This header defines the software version macros, which are substituted at build time by CMake.
+ * These macros can be used for logging, diagnostics, or display in user interfaces.
+ */
+
+#ifndef DELTAFLOW_VERSION_H
+#define DELTAFLOW_VERSION_H
+ 
+/**
+  * @def CMake_VERSION
+  * @brief The version of CMake used to configure the build.
+  *
+  * This macro is replaced by the value of `@CMAKE_VERSION@` during configuration.
+  */
 #define CMake_VERSION "@CMAKE_VERSION@"
+
+/**
+  * @def gcc_VERSION
+  * @brief The version of the C++ compiler used.
+  *
+  * This macro is replaced by the value of `@CMAKE_CXX_COMPILER_VERSION@` during configuration.
+  */
 #define gcc_VERSION "@CMAKE_CXX_COMPILER_VERSION@"
+
+/**
+  * @def deltaFlow_VERSION
+  * @brief The version of the deltaFlow project.
+  *
+  * This macro is replaced by the value of `@PROJECT_VERSION@` as defined in the top-level CMakeLists.txt.
+  */
 #define deltaFlow_VERSION "@PROJECT_VERSION@"
+
+#endif

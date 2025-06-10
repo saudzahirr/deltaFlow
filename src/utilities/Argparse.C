@@ -1,10 +1,11 @@
-#include "Argparse.H"
-#include "Utils.H"
-#include "Logger.H"
-#include "Version.H"
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
+
+#include "Argparse.H"
+#include "Logger.H"
+#include "Utils.H"
+#include "Version.H"
 
 ArgumentParser::ArgumentParser(int argc, char* argv[]) {
     parse_args(argc, argv);
