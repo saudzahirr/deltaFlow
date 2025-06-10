@@ -1,0 +1,44 @@
+digraph "src/main.C"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  Node1 [id="Node000001",label="src/main.C",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Main entry point for the deltaFlow (power flow analysis application)."];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="Admittance.H",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$_admittance_8_h.html",tooltip="Declaration of functions and classes for constructing the bus admittance matrix ($$ Y_{bus} $$) in po..."];
+  Node2 -> Node3 [id="edge2_Node000002_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="Eigen/Dense",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node1 -> Node4 [id="edge3_Node000001_Node000004",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="Argparse.H",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$_argparse_8_h.html",tooltip="Command-line argument parsing utilities for deltaFlow."];
+  Node4 -> Node5 [id="edge4_Node000004_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="string",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node1 -> Node6 [id="edge5_Node000001_Node000006",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="GaussSeidel.H",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$_gauss_seidel_8_h.html",tooltip="Declaration of the Gauss-Seidel load flow solver for power system analysis."];
+  Node6 -> Node3 [id="edge6_Node000006_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node7 [id="edge7_Node000001_Node000007",color="steelblue1",style="solid",tooltip=" "];
+  Node7 [id="Node000007",label="NewtonRaphson.H",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$_newton_raphson_8_h.html",tooltip="Declaration of the Newton-Raphson load flow solver for power system analysis."];
+  Node7 -> Node3 [id="edge8_Node000007_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node8 [id="edge9_Node000001_Node000008",color="steelblue1",style="solid",tooltip=" "];
+  Node8 [id="Node000008",label="Logger.H",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$_logger_8_h.html",tooltip="Logger utilities for deltaFlow, providing logging macros and a singleton Logger class."];
+  Node8 -> Node9 [id="edge10_Node000008_Node000009",color="steelblue1",style="solid",tooltip=" "];
+  Node9 [id="Node000009",label="chrono",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node8 -> Node10 [id="edge11_Node000008_Node000010",color="steelblue1",style="solid",tooltip=" "];
+  Node10 [id="Node000010",label="fmt/chrono.h",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node8 -> Node11 [id="edge12_Node000008_Node000011",color="steelblue1",style="solid",tooltip=" "];
+  Node11 [id="Node000011",label="fmt/color.h",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node8 -> Node12 [id="edge13_Node000008_Node000012",color="steelblue1",style="solid",tooltip=" "];
+  Node12 [id="Node000012",label="fstream",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node8 -> Node13 [id="edge14_Node000008_Node000013",color="steelblue1",style="solid",tooltip=" "];
+  Node13 [id="Node000013",label="iostream",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node8 -> Node5 [id="edge15_Node000008_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node1 -> Node14 [id="edge16_Node000001_Node000014",color="steelblue1",style="solid",tooltip=" "];
+  Node14 [id="Node000014",label="Reader.H",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$_reader_8_h.html",tooltip="Data structures and utility functions for reading and displaying bus and branch data in power system ..."];
+  Node14 -> Node3 [id="edge17_Node000014_Node000003",color="steelblue1",style="solid",tooltip=" "];
+  Node14 -> Node5 [id="edge18_Node000014_Node000005",color="steelblue1",style="solid",tooltip=" "];
+  Node14 -> Node15 [id="edge19_Node000014_Node000015",color="steelblue1",style="solid",tooltip=" "];
+  Node15 [id="Node000015",label="vector",height=0.2,width=0.4,color="grey60", fillcolor="#E0E0E0", style="filled",tooltip=" "];
+  Node1 -> Node16 [id="edge20_Node000001_Node000016",color="steelblue1",style="solid",tooltip=" "];
+  Node16 [id="Node000016",label="Writer.H",height=0.2,width=0.4,color="grey40", fillcolor="white", style="filled",URL="$_writer_8_h.html",tooltip="Output utilities for writing power system analysis results to CSV files."];
+  Node16 -> Node5 [id="edge21_Node000016_Node000005",color="steelblue1",style="solid",tooltip=" "];
+}
