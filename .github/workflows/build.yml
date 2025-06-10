@@ -27,7 +27,7 @@ jobs:
       run: perl ./bin/test.pl
 
     - name: Generate documentation
-      run: doxygen Doxyfile
+      run: perl ./bin/build.pl -d
 
     - name: Deploy docs to GitHub Pages
       if: github.ref == 'refs/heads/master'

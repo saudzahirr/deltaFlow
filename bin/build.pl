@@ -68,10 +68,6 @@ if ($args->{test}) {
 if ($args->{doc}) {
     print "Building docs...\n";
 
-    system("cmake -S . -B build -DBUILD_DOC=ON") == 0
-        or die "CMake doc configuration failed\n";
-
-    chdir "build" or die "Cannot change directory to build\n";
-    system("make docs") == 0 or die "Docs build failed\n";
-    chdir ".." or die "Cannot change back to project root\n";
+    system("doxygen Doxyfile") == 0
+        or die "Doxyfile configuration failed\n";
 }

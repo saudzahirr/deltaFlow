@@ -20,7 +20,7 @@ void ArgumentParser::parse_args(int argc, char* argv[]) {
         if ((arg == "--bus" || arg == "-b") && i + 1 < argc) {
             this->busDataCsv = argv[++i];
         }
-        else if ((arg == "--branch" || arg == "-l") && i + 1 < argc) {
+        else if ((arg == "--line" || arg == "-l") && i + 1 < argc) {
             this->branchDataCsv = argv[++i];
         }
         else if ((arg == "--tolerance" || arg == "-t") && i + 1 < argc) {
