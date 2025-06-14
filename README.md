@@ -1,5 +1,7 @@
 # deltaFlow
 
+![deltaFlow](./docs/deltaFlow.png)
+
 **deltaFlow** is a command-line tool that solves steady-state power flow problems using numerical methods like Gauss-Seidel and Newton-Raphson. It reads input from CSV files for bus and branch data.
 
 ---

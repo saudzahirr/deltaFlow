@@ -6,9 +6,8 @@ DOXYFILE_ENCODING         = UTF-8
 #-----------------------------------------------------------------------------
 
 PROJECT_NAME              = "deltaFlow"
-# Uncomment to include a project logo or icon in the documentation
-# PROJECT_LOGO           = docs/logo.svg
-# PROJECT_ICON           = docs/icon.svg
+PROJECT_LOGO           = docs/deltaFlow.ico
+PROJECT_ICON           = docs/deltaFlow.ico
 
 #-----------------------------------------------------------------------------
 # Output Configuration
@@ -21,6 +20,7 @@ OUTPUT_DIRECTORY          = docs/html
 #-----------------------------------------------------------------------------
 
 INPUT                     = src README.md
+IMAGE_PATH                = docs
 RECURSIVE                 = YES
 FILE_PATTERNS             = *.C *.H *.md
 EXTENSION_MAPPING         = C=Cpp H=Cpp
@@ -75,6 +75,8 @@ GRAPHICAL_HIERARCHY       = YES
 DOT_GRAPH_MAX_NODES       = 100
 DOT_MULTI_TARGETS         = YES
 DOT_TRANSPARENT           = YES
+DOT_IMAGE_FORMAT          = png
+
 
 #-----------------------------------------------------------------------------
 # HTML Output Configuration
