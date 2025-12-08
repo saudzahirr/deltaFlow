@@ -27,7 +27,9 @@ jobs:
       run: perl ./bin/test.pl
 
     - name: Generate documentation
-      run: perl ./bin/build.pl -d
+      run: |
+        perl ./bin/build.pl -d
+        ls -R ./docs/html
 
     - name: Deploy docs to GitHub Pages
       if: github.ref == 'refs/heads/master'
