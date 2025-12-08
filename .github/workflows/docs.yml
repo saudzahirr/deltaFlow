@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y perl doxygen
+        run: sudo apt-get update && sudo apt-get install -y perl doxygen graphviz
 
       - name: Generate documentation
         run: |
