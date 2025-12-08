@@ -23,6 +23,10 @@ sub parse_args {
         doc   => 0,
     );
 
+    if (!@ARGV) {
+        print_help();
+    }
+
     while (@ARGV) {
         my $arg = shift @ARGV;
         if ($arg eq '--build' || $arg eq '-b') {
