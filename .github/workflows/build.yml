@@ -14,52 +14,22 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # Caching APT
-    - name: Cache APT packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          /var/cache/apt
-          /var/lib/apt/lists
-        key: ${{ runner.os }}-apt-${{ hashFiles('**/bin/build.pl') }}
-        restore-keys: ${{ runner.os }}-apt-
-
     - name: Install dependencies (Perl, CMake, Doxygen, GCC)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y perl cmake doxygen gcc g++
+      run: sudo apt-get update && sudo apt-get install -y perl cmake doxygen gcc g++
 
-    # Caching CMake build artifacts and FetchContent
-    - name: Cache CMake and FetchContent
-      uses: actions/cache@v4
-      with:
-        path: |
-          build
-          ~/.cache/cmake
-        key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-cmake-
-
-    - name: Create build directory
-      run: cmake -E make_directory build
-
-    - name: Run CMake configuration
-      working-directory: ./build
-      run: cmake .. -DBUILD_TEST=ON
-
-    - name: Build deltaFlow
-      working-directory: ./build
-      run: cmake --build . --parallel
+    - name: Build deltaFlow (with tests)
+      run: perl ./bin/build.pl -t
 
     - name: Run CMake tests
-      working-directory: ./build
       run: ctest --output-on-failure
 
-    - name: Tests (if needed separately)
+    - name: Tests
       run: perl ./bin/test.pl
 
     - name: Generate documentation
-      run: perl ./bin/build.pl -d
+      run: |
+        perl ./bin/build.pl -d
+        ls -R ./docs/html
 
     - name: Deploy docs to GitHub Pages
       if: github.ref == 'refs/heads/master'
