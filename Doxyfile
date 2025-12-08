@@ -7,7 +7,6 @@ DOXYFILE_ENCODING         = UTF-8
 
 PROJECT_NAME              = "deltaFlow"
 PROJECT_LOGO           = docs/deltaFlow.ico
-PROJECT_ICON           = docs/deltaFlow.ico
 
 #-----------------------------------------------------------------------------
 # Output Configuration
@@ -23,7 +22,7 @@ INPUT                     = src README.md
 IMAGE_PATH                = docs
 RECURSIVE                 = YES
 FILE_PATTERNS             = *.C *.H *.md
-EXTENSION_MAPPING         = C=Cpp H=Cpp
+EXTENSION_MAPPING         = c=C h=C C=C H=C
 
 # Exclude third-party code and version file from documentation
 EXCLUDE                   = src/thirdParty/ src/Version.H
@@ -57,9 +56,6 @@ HIDE_UNDOC_MEMBERS        = YES                  # Hide undocumented class membe
 #-----------------------------------------------------------------------------
 
 SHOW_NAMESPACES           = YES
-GENERATE_CLASS_HIERARCHY  = YES
-GENERATE_NAMESPACEFILE    = YES
-CLASS_DIAGRAMS            = YES
 TEMPLATE_RELATIONS        = YES
 
 #-----------------------------------------------------------------------------
@@ -74,7 +70,6 @@ CALLER_GRAPH              = YES
 GRAPHICAL_HIERARCHY       = YES
 DOT_GRAPH_MAX_NODES       = 100
 DOT_MULTI_TARGETS         = YES
-DOT_TRANSPARENT           = YES
 DOT_IMAGE_FORMAT          = png
 
 
@@ -83,11 +78,10 @@ DOT_IMAGE_FORMAT          = png
 #-----------------------------------------------------------------------------
 
 GENERATE_HTML             = YES
-HTML_OUTPUT               = .
+HTML_OUTPUT               = html
 HTML_EXTRA_STYLESHEET     = docs/style.css
 HTML_COLORSTYLE           = TOGGLE
 HTML_COLORSTYLE_SAT       = 40
-HTML_PROJECT_COOKIE       = doxygen_docs
 GENERATE_TREEVIEW         = YES
 
 #-----------------------------------------------------------------------------
@@ -113,7 +107,7 @@ LATEX_HIDE_INDICES        = YES
 #-----------------------------------------------------------------------------
 
 USE_MATHJAX               = YES                   # Enable MathJax for LaTeX rendering
-FORMULA_SUPPORT           = YES
+MATHJAX_RELPATH           = https://cdn.jsdelivr.net/npm/mathjax@3/es5/
 
 #-----------------------------------------------------------------------------
 # Warnings
