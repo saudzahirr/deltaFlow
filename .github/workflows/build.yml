@@ -14,27 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies (Perl, CMake, Doxygen, GCC)
+    - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y perl cmake doxygen gcc g++
 
-    - name: Build deltaFlow (with tests)
+    - name: Build deltaFlow
       run: perl ./bin/build.pl -t
 
-    - name: Run CMake tests
+    - name: CMake Tests
       run: ctest --output-on-failure
 
     - name: Tests
       run: perl ./bin/test.pl
-
-    - name: Generate documentation
-      run: |
-        perl ./bin/build.pl -d
-        ls -R ./docs/html
-
-    - name: Deploy docs to GitHub Pages
-      if: github.ref == 'refs/heads/master'
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/html
-        publish_branch: gh-pages
