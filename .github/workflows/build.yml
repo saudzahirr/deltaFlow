@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y perl cmake doxygen gcc g++
+      run: sudo apt-get update && sudo apt-get install -y perl cmake gcc g++
 
     - name: Build deltaFlow
       run: perl ./bin/build.pl -t
