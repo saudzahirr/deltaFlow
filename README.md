@@ -6,7 +6,7 @@
 
 ---
 
-## 🔧 Build Instructions
+## Build Instructions
 
 Requires: A C++17-compatible compiler and CMake.
 
@@ -23,7 +23,7 @@ Other options:
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ```sh
 ./deltaFlow [OPTIONS] <method>
@@ -45,7 +45,7 @@ Other options:
 
 ---
 
-## 🧪 Examples
+## Examples
 
 ```sh
 ./deltaFlow -b data/bus.csv -l data/line.csv gauss-seidel
@@ -54,14 +54,14 @@ Other options:
 
 ---
 
-## 📌 Notes
+## Notes
 
 * Both bus and branch files are required.
 * `--relaxation` is ignored with Newton-Raphson.
 
 ---
 
-## 📄 Documentation
+## Documentation
 
 Generate with:
 

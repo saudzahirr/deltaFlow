@@ -47,10 +47,19 @@ sub parse_args {
 
 my $args = parse_args();
 
+open(my $fh, '<', 'version') or die "Cannot open version file: $!\n";
+chomp(my $version = <$fh>);
+close($fh);
+
+if ($args->{build} || $args->{test}) {
+    system("conan install . --output-folder=build --build=missing") == 0
+        or die "Conan install failed\n";
+}
+
 if ($args->{build}) {
     print "Running build (without tests)...\n";
 
-    system("cmake -S . -B build -DBUILD_TEST=OFF") == 0
+    system("cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TEST=OFF -DPROJECT_VERSION=$version") == 0
         or die "CMake configuration failed\n";
 
     chdir "build" or die "Cannot change directory to build\n";
@@ -61,7 +70,7 @@ if ($args->{build}) {
 if ($args->{test}) {
     print "Running tests...\n";
 
-    system("cmake -S . -B build -DBUILD_TEST=ON") == 0
+    system("cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TEST=ON -DPROJECT_VERSION=$version") == 0
         or die "CMake configuration failed\n";
 
     chdir "build" or die "Cannot change directory to build\n";

@@ -15,7 +15,7 @@ get_property(INCLUDES GLOBAL PROPERTY INCLUDES)
 
 include_directories(${INCLUDES})
 
-add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} fmt Eigen3)
+add_executable(${EXECUTABLE_NAME} ${SOURCES})
+target_link_libraries(${EXECUTABLE_NAME} fmt::fmt Eigen3::Eigen)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${EIGEN3_INCLUDE_DIRS} .)
+target_include_directories(${EXECUTABLE_NAME} PRIVATE ${EIGEN3_INCLUDE_DIRS} .)
