@@ -8,6 +8,7 @@
 
 #include "Admittance.H"
 #include "GaussSeidel.H"
+#include "Qlim.H"
 #include "Logger.H"
 #include "Reader.H"
 #include "Writer.H"
@@ -66,7 +67,76 @@ TEST_CASE("Gauss-Seidel 5-Bus Power Flow Test", "[GaussSeidel]") {
 
     Eigen::MatrixXcd Y = computeAdmittanceMatrix(busData, branchData);
 
-    bool converged = GaussSeidel(Y, busData, 1024, 1E-8, 1.0);
+    // Extract G and B from Y_bus (for Q-limit check)
+    Eigen::MatrixXd G = Y.array().real().matrix();
+    Eigen::MatrixXd B = Y.array().imag().matrix();
+
+    // Flat start: PQ buses -> V=1.0, delta=0; PV/Slack keep file voltage
+    Eigen::VectorXd V(N);
+    Eigen::VectorXd delta_rad = Eigen::VectorXd::Zero(N);
+
+    for (int i = 0; i < N; ++i) {
+        if (busData.Type(i) == 3) {
+            V(i) = 1.0;
+        } else {
+            V(i) = busData.V(i);
+        }
+    }
+
+    // Working copy of bus types (modified during Q-limit loop)
+    Eigen::VectorXi type_bus = busData.Type;
+
+    // Outer Q-limit loop
+    bool Q_lim_status = true;
+    bool converged = false;
+
+    while (Q_lim_status) {
+        Eigen::VectorXd Ps = busData.Pg - busData.Pl;
+        Eigen::VectorXd Qs = busData.Qg - busData.Ql;
+
+        std::vector<int> pv_indices;
+        for (int i = 0; i < N; ++i)
+            if (type_bus(i) == 2) pv_indices.push_back(i);
+
+        converged = GaussSeidel(Y, V, delta_rad, type_bus, Ps, Qs, N,
+                                 1024, 1E-8, 1.0);
+
+        if (!converged) break;
+
+        Q_lim_status = checkQlimits(V, delta_rad, type_bus, G, B,
+                                     busData, pv_indices, N);
+    }
+
+    // Post-convergence: update busData
+    Eigen::VectorXcd Vc(N);
+    for (int i = 0; i < N; ++i)
+        Vc(i) = std::polar(V(i), delta_rad(i));
+
+    Eigen::VectorXd P_net = busData.Pg - busData.Pl;
+    Eigen::VectorXd Q_net = busData.Qg - busData.Ql;
+
+    for (int i = 0; i < N; ++i) {
+        if (busData.Type(i) == 1) {
+            std::complex<double> Ii = Y.row(i) * Vc;
+            std::complex<double> Si = Vc(i) * std::conj(Ii);
+            P_net(i) = Si.real();
+            Q_net(i) = Si.imag();
+        }
+    }
+
+    for (int i = 0; i < N; ++i) {
+        if (busData.Type(i) == 2) {
+            std::complex<double> Ii = Y.row(i) * Vc;
+            Q_net(i) = -std::imag(std::conj(Vc(i)) * Ii);
+        }
+    }
+
+    for (int i = 0; i < N; ++i) {
+        busData.V(i) = std::abs(Vc(i));
+        busData.delta(i) = std::arg(Vc(i)) * 180.0 / M_PI;
+        busData.Pg(i) = P_net(i) + busData.Pl(i);
+        busData.Qg(i) = Q_net(i) + busData.Ql(i);
+    }
 
     dispBusData(busData);
     dispLineFlow(busData, branchData, Y);

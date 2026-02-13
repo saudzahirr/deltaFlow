@@ -55,7 +55,9 @@ void IEEECommonDataFormat::read(const std::string& filename) {
             busName.push_back(strip(line.substr(4, 11)));
             std::string typeStr = strip(line.substr(24, 2));
             busType.push_back(std::stoi(busTypes[typeStr]));
-            V.push_back(1.0);      // default 1.0 if type 3
+            // Read voltage magnitude from CDF columns 28-33 (1-based), 0-based substr(27,6)
+            double vmag = std::stod(strip(line.substr(27, 6)));
+            V.push_back(vmag > 0.0 ? vmag : 1.0);
             delta.push_back(0.0);
             Pl.push_back(std::stod(strip(line.substr(40, 9))) / 100.0);
             Ql.push_back(std::stod(strip(line.substr(49, 10))) / 100.0);
@@ -78,7 +80,8 @@ void IEEECommonDataFormat::read(const std::string& filename) {
             G.push_back(0.0); // default 0
             B.push_back(std::stod(strip(line.substr(40, 10))));
             std::string aStr = strip(line.substr(76, 6));
-            tap.push_back(aStr.empty() || aStr[0] == '0' ? 1.0 : std::stod(aStr));
+            double aVal = aStr.empty() ? 0.0 : std::stod(aStr);
+            tap.push_back(aVal == 0.0 ? 1.0 : aVal);
         }
     }
 

@@ -5,10 +5,12 @@
 #include <cmath>
 #include <complex>
 #include <iostream>
+#include <vector>
 
 #include "Admittance.H"
 #include "Logger.H"
 #include "NewtonRaphson.H"
+#include "Qlim.H"
 #include "Reader.H"
 #include "Writer.H"
 
@@ -65,8 +67,69 @@ TEST_CASE("Newton-Raphson 5-Bus Test", "[NewtonRaphson]") {
     branchData.B    << 0.00,   1.72,  0.88,   0.00,    0.44;
 
     Eigen::MatrixXcd Y = computeAdmittanceMatrix(busData, branchData);
+    Eigen::MatrixXd G = Y.array().real().matrix();
+    Eigen::MatrixXd B = Y.array().imag().matrix();
 
-    bool converged = NewtonRaphson(Y, busData, 1024, 1E-8);
+    // Flat start: PQ V=1.0, PV keep specified V, all delta=0
+    Eigen::VectorXd V(N);
+    Eigen::VectorXd delta = Eigen::VectorXd::Zero(N);
+    for (int i = 0; i < N; ++i) {
+        V(i) = (busData.Type(i) == 3) ? 1.0 : busData.V(i);
+    }
+
+    Eigen::VectorXi type_bus = busData.Type;
+
+    // Outer Q-limit loop
+    bool Q_lim_status = true;
+    bool converged = false;
+
+    while (Q_lim_status) {
+        Eigen::VectorXd Ps = busData.Pg - busData.Pl;
+        Eigen::VectorXd Qs = busData.Qg - busData.Ql;
+
+        std::vector<int> pq_indices, pv_indices;
+        for (int i = 0; i < N; ++i) {
+            if (type_bus(i) == 3) pq_indices.push_back(i);
+            else if (type_bus(i) == 2) pv_indices.push_back(i);
+        }
+
+        converged = NewtonRaphson(G, B, Ps, Qs, V, delta,
+            N, static_cast<int>(pq_indices.size()), pq_indices, 1024, 1E-8);
+
+        if (!converged) break;
+
+        Q_lim_status = checkQlimits(V, delta, type_bus, G, B,
+            busData, pv_indices, N);
+    }
+
+    // Post-convergence: update busData
+    Eigen::VectorXcd Vc(N);
+    for (int i = 0; i < N; ++i)
+        Vc(i) = std::polar(V(i), delta(i));
+
+    Eigen::VectorXd P_net = busData.Pg - busData.Pl;
+    Eigen::VectorXd Q_net = busData.Qg - busData.Ql;
+
+    for (int i = 0; i < N; ++i) {
+        if (busData.Type(i) == 1) {
+            std::complex<double> Ii = Y.row(i) * Vc;
+            std::complex<double> Si = Vc(i) * std::conj(Ii);
+            P_net(i) = Si.real();
+            Q_net(i) = Si.imag();
+        }
+    }
+    for (int i = 0; i < N; ++i) {
+        if (busData.Type(i) == 2) {
+            std::complex<double> Ii = Y.row(i) * Vc;
+            Q_net(i) = -std::imag(std::conj(Vc(i)) * Ii);
+        }
+    }
+    for (int i = 0; i < N; ++i) {
+        busData.V(i) = std::abs(Vc(i));
+        busData.delta(i) = std::arg(Vc(i)) * 180.0 / M_PI;
+        busData.Pg(i) = P_net(i) + busData.Pl(i);
+        busData.Qg(i) = Q_net(i) + busData.Ql(i);
+    }
 
     dispBusData(busData);
     dispLineFlow(busData, branchData, Y);

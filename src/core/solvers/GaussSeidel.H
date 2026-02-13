@@ -74,23 +74,35 @@
 
 #include <Eigen/Dense>
 
-class BranchData;
-class BusData;
- 
 /**
   * @brief Solves the power flow equations using the Gauss-Seidel iterative method.
   *
-  * This function updates the bus voltages in the \ref BusData structure using the Gauss-Seidel algorithm.
+  * Pure solver: no Q-limit checking (handled by outer loop via checkQlimits).
+  * PV buses maintain their scheduled voltage magnitude; PQ buses are fully updated.
   *
-  * @param Ybus The bus admittance matrix ($$ Y_{bus} $$).
-  * @param busData The bus data, including initial guesses for voltages and specified powers.
+  * @param Y The bus admittance matrix ($$ Y_{bus} $$).
+  * @param V (in/out) Voltage magnitudes [p.u.]. PV buses maintain scheduled value.
+  * @param delta (in/out) Voltage angles [rad].
+  * @param type_bus Bus type vector (1=Slack, 2=PV, 3=PQ).
+  * @param P Scheduled net active power injections [p.u.] ($$ P_g - P_l $$).
+  * @param Q Scheduled net reactive power injections [p.u.] ($$ Q_g - Q_l $$). Used only for PQ buses.
+  * @param N Total number of buses.
   * @param maxIter Maximum number of iterations (default: 1024).
   * @param tolerance Convergence tolerance for bus voltage updates (default: $$ 1 \times 10^{-8} $$).
   * @param omega Relaxation parameter for the Successive Over-Relaxation (SOR) method (default: 1.0; SOR not applied).
   * @return true if the algorithm converged within the specified number of iterations, false otherwise.
-  *
-  * @note The function modifies the voltages in the \ref BusData structure in-place.
   */
-bool GaussSeidel(const Eigen::MatrixXcd& Ybus, BusData& busData, int maxIter = 1024, double tolerance = 1E-8, double omega = 1.0);
- 
+bool GaussSeidel(
+    const Eigen::MatrixXcd& Y,
+    Eigen::VectorXd& V,
+    Eigen::VectorXd& delta,
+    const Eigen::VectorXi& type_bus,
+    const Eigen::VectorXd& P,
+    const Eigen::VectorXd& Q,
+    int N,
+    int maxIter = 1024,
+    double tolerance = 1E-8,
+    double omega = 1.0
+);
+
 #endif

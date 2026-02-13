@@ -64,9 +64,9 @@ docs/html/
 
 # ---------------- Catch2 ----------------
 
-/bin/test_*
-/bin/Test*
-/build/test/*
+bin/test_*
+bin/Test*
+build/test/*
 **/catch2-*
 
 

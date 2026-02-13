@@ -78,6 +78,7 @@
 #define NEWTONRAPHSON_H
 
 #include <Eigen/Dense>
+#include <vector>
 
 class BranchData;
 class BusData;
@@ -85,16 +86,34 @@ class BusData;
 /**
   * @brief Solves the power flow equations using the Newton-Raphson iterative method.
   *
-  * This function updates the bus voltages in the \ref BusData structure using the Newton-Raphson algorithm.
+  * This is a pure solver function that takes G, B matrices, scheduled power,
+  * initial voltage/angle guesses, and bus classification. It modifies V and delta in-place.
   *
-  * @param Y The bus admittance matrix ($$ Y_{bus} $$).
-  * @param busData The bus data, including initial guesses for voltages and specified powers.
+  * @param G Conductance matrix (real part of $$ Y_{bus} $$).
+  * @param B Susceptance matrix (imaginary part of $$ Y_{bus} $$).
+  * @param Ps Scheduled active power injections (Pg - Pl) [p.u.].
+  * @param Qs Scheduled reactive power injections (Qg - Ql) [p.u.].
+  * @param V (in/out) Voltage magnitudes [p.u.].
+  * @param delta (in/out) Voltage angles [rad].
+  * @param n_bus Total number of buses.
+  * @param n_pq Number of PQ buses.
+  * @param pq_bus_id 0-based indices of PQ buses.
   * @param maxIter Maximum number of iterations (default: 1024).
   * @param tolerance Convergence tolerance for power mismatches (default: $$ 1 \times 10^{-8} $$).
-  * @return true if the algorithm converged within the specified number of iterations, false otherwise.
-  *
-  * @note The function modifies the voltages in the \ref BusData structure in-place.
+  * @return true if converged, false otherwise.
   */
-bool NewtonRaphson(const Eigen::MatrixXcd& Y, BusData& busData, int maxIter = 1024, double tolerance = 1E-8);
+bool NewtonRaphson(
+    const Eigen::MatrixXd& G,
+    const Eigen::MatrixXd& B,
+    const Eigen::VectorXd& Ps,
+    const Eigen::VectorXd& Qs,
+    Eigen::VectorXd& V,
+    Eigen::VectorXd& delta,
+    int n_bus,
+    int n_pq,
+    const std::vector<int>& pq_bus_id,
+    int maxIter = 1024,
+    double tolerance = 1E-8
+);
 
 #endif
