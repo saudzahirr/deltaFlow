@@ -27,8 +27,8 @@
  * such as voltages, power, admittance, and transformer tap ratios.
  */
 
-#ifndef READER_H
-#define READER_H
+#ifndef DATA_OBJECT_H
+#define DATA_OBJECT_H
 
 #include <Eigen/Dense>
 
@@ -71,14 +71,6 @@ struct BusData {
  };
 
 /**
-  * @brief Reads bus data from a CSV file and fills a BusData structure.
-  * @param filename Path to the bus data CSV file.
-  * @param busData Reference to BusData structure to populate.
-  * @return true if the file was read and parsed successfully, false otherwise.
-  */
-bool readBusDataCSV(const std::string& filename, BusData& busData);
-
-/**
   * @struct BranchData
   * @brief Contains all relevant data for each transmission line or transformer branch.
   *
@@ -98,33 +90,5 @@ struct BranchData {
     Eigen::VectorXd B;         ///< Line susceptance ($$ B $$) [p.u.]
     Eigen::VectorXd tapRatio;  ///< Transformer tap ratio ($$ a $$)
 };
-
-/**
-  * @brief Reads branch data from a CSV file and fills a BranchData structure.
-  * @param filename Path to the branch data CSV file.
-  * @param branchData Reference to BranchData structure to populate.
-  * @return true if the file was read and parsed successfully, false otherwise.
-  */
-bool readBranchDataCSV(const std::string& filename, BranchData& branchData);
-
-/**
-  * @brief Displays bus data in a human-readable format.
-  * @param busData The bus data to display.
-  */
-void dispBusData(const BusData& busData);
-
-/**
-  * @brief Displays the line flow results, including power flow and losses.
-  * @param busData The bus data structure.
-  * @param branchData The branch data structure.
-  * @param Y The bus admittance matrix ($$ Y_{bus} $$).
-  * @param basemva The base MVA for per-unit system (default: 100).
-  */
-void dispLineFlow(
-    const BusData& busData,
-    const BranchData& branchData,
-    const Eigen::MatrixXcd& Y,
-    double basemva = 100
-);
 
 #endif

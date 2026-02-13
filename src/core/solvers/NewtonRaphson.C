@@ -5,7 +5,7 @@
 
 #include "Logger.H"
 #include "NewtonRaphson.H"
-#include "Reader.H"
+#include "Data.H"
 #include "Utils.H"
 
 bool NewtonRaphson(const Eigen::MatrixXcd& Y, BusData& busData, int maxIter, double tolerance) {

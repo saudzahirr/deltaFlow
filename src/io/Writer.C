@@ -1,113 +1,11 @@
-#include <cmath>
+#include <complex>
 #include <fstream>
-#include <iostream>
-#include <sstream>
+#include <iomanip>
 
 #include "Logger.H"
-#include "Reader.H"
+#include "Data.H"
+#include "Writer.H"
 
-bool readBusDataCSV(const std::string& busCsvFilepath, BusData& busData) {
-    std::ifstream file(busCsvFilepath);
-    if (!file.is_open()) {
-        ERROR("Unable to open bus data CSV file: {}", busCsvFilepath);
-        return false;
-    }
-
-    std::string line;
-    std::getline(file, line);
-
-    std::vector<int> ids, types;
-    std::vector<std::string> names;
-    std::vector<double> V, delta, Pg, Qg, Pl, Ql, Qgmax, Qgmin, Gs, Bs;
-
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string field;
-
-        std::getline(ss, field, ',');
-        ids.push_back(std::stoi(field));
-
-        std::getline(ss, field, ',');
-        names.push_back(field);
-
-        std::getline(ss, field, ',');
-        types.push_back(std::stoi(field));
-
-        auto readDouble = [&](std::vector<double>& vec) {
-            std::getline(ss, field, ',');
-            vec.push_back(field.empty() ? 0.0 : std::stod(field));
-        };
-
-        readDouble(V); readDouble(delta); readDouble(Pg); readDouble(Qg);
-        readDouble(Pl); readDouble(Ql); readDouble(Qgmax); readDouble(Qgmin);
-        readDouble(Gs); readDouble(Bs);
-    }
-
-    size_t n = ids.size();
-    busData.ID     = Eigen::Map<Eigen::VectorXi>(ids.data(), n);
-    busData.Name   = names;
-    busData.Type   = Eigen::Map<Eigen::VectorXi>(types.data(), n);
-    busData.V      = Eigen::Map<Eigen::VectorXd>(V.data(), n);
-    busData.delta  = Eigen::Map<Eigen::VectorXd>(delta.data(), n);
-    busData.Pg     = Eigen::Map<Eigen::VectorXd>(Pg.data(), n);
-    busData.Qg     = Eigen::Map<Eigen::VectorXd>(Qg.data(), n);
-    busData.Pl     = Eigen::Map<Eigen::VectorXd>(Pl.data(), n);
-    busData.Ql     = Eigen::Map<Eigen::VectorXd>(Ql.data(), n);
-    busData.Qgmax  = Eigen::Map<Eigen::VectorXd>(Qgmax.data(), n);
-    busData.Qgmin  = Eigen::Map<Eigen::VectorXd>(Qgmin.data(), n);
-    busData.Gs     = Eigen::Map<Eigen::VectorXd>(Gs.data(), n);
-    busData.Bs     = Eigen::Map<Eigen::VectorXd>(Bs.data(), n);
-
-    return true;
-}
-
-bool readBranchDataCSV(const std::string& branchCsvFilepath, BranchData& branchData) {
-    std::ifstream file(branchCsvFilepath);
-    if (!file.is_open()) {
-        std::cerr << "Unable to open branch data CSV file: " << branchCsvFilepath << std::endl;
-        return false;
-    }
-
-    std::string line;
-    std::getline(file, line);
-
-    std::vector<int> fromVec, toVec;
-    std::vector<double> R, X, G, B, a;
-
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string field;
-
-        std::getline(ss, field, ',');
-        fromVec.push_back(std::stoi(field));
-
-        std::getline(ss, field, ',');
-        toVec.push_back(std::stoi(field));
-
-        auto readDouble = [&](std::vector<double>& vec) {
-            std::getline(ss, field, ',');
-            vec.push_back(field.empty() ? 0.0 : std::stod(field));
-        };
-
-        readDouble(R);
-        readDouble(X);
-        readDouble(G);
-        readDouble(B);
-        readDouble(a);
-    }
-
-    size_t n = fromVec.size();
-
-    branchData.From = Eigen::VectorXi::Map(fromVec.data(), n);
-    branchData.To = Eigen::VectorXi::Map(toVec.data(), n);
-    branchData.R = Eigen::VectorXd::Map(R.data(), n);
-    branchData.X = Eigen::VectorXd::Map(X.data(), n);
-    branchData.G = Eigen::VectorXd::Map(G.data(), n);
-    branchData.B = Eigen::VectorXd::Map(B.data(), n);
-    branchData.tapRatio = Eigen::VectorXd::Map(a.data(), n);
-
-    return true;
-}
 
 void dispBusData(const BusData& busData) {
     int nbus = busData.V.size();
@@ -253,4 +151,30 @@ void dispLineFlow(
 
     INFO("");
     INFO("Total loss                         {:9.3f} {:9.3f}", std::real(SLT), std::imag(SLT));
+}
+
+bool writeOutputCSV(const BusData& busData) {
+    std::ofstream out("deltaFlow.csv");
+    if (!out.is_open()) return false;
+
+    out << "BusID,Name,Type,Voltage,Angle,Pg,Qg,Pl,Ql,Qgmax,Qgmin,Gs,Bs\n";
+    for (int i = 0; i < busData.ID.size(); ++i) {
+        out << busData.ID[i] << ","
+            << busData.Name[i] << ","
+            << busData.Type[i] << ","
+            << std::fixed << std::setprecision(64)
+            << busData.V[i] << ","
+            << busData.delta[i] << ","
+            << busData.Pg[i] << ","
+            << busData.Qg[i] << ","
+            << busData.Pl[i] << ","
+            << busData.Ql[i] << ","
+            << busData.Qgmax[i] << ","
+            << busData.Qgmin[i] << ","
+            << busData.Gs[i] << ","
+            << busData.Bs[i] << "\n";
+    }
+
+    out.close();
+    return true;
 }

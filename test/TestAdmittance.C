@@ -43,7 +43,29 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[computeAdmittanceMat
 
     DEBUG("Admittance Matrix");
     DEBUG("{}", std::string(80, '='));
-    Utilities::disp(Y);
+    for (int i = 0; i < Y.rows(); ++i) {
+        std::stringstream rowStream;
+        for (int j = 0; j < Y.cols(); ++j) {
+            auto R = Y(i, j).real();
+            auto X = Y(i, j).imag();
+
+            std::stringstream cell;
+            if (X >= 0) {
+                cell << "(" << R << " + " << X << "i)";
+            } else {
+                cell << "(" << R << " - " << -X << "i)";
+            }
+
+            rowStream << std::right;
+
+            rowStream << std::setw(22) << cell.str();
+
+            if (j != Y.cols() - 1)
+                rowStream << "\t";
+        }
+        DEBUG("{}", rowStream.str().c_str());
+    }
+
 
     // ===== Basic structure checks =====
     REQUIRE(Y.rows() == nBus);

@@ -29,33 +29,54 @@
 #include "NewtonRaphson.H"
 #include "Logger.H"
 #include "Reader.H"
+#include "IEEE.H"
+#include "PSSE.H"
 #include "Writer.H"
 
 int main(int argc, char* argv[]) {
-    ArgumentParser opts(argc, argv);
-    DEBUG("Bus Data csv :: {}", opts.getBusDataCsv());
-    DEBUG("Branch Data csv :: {}", opts.getBranchDataCsv());
+    ArgumentParser args(argc, argv);
+    DEBUG("Input file :: {}", args.getInputFile());
+    DEBUG("Job name :: {}", args.getJobName());
 
-    BusData busData;
-    BranchData branchData;
+    Reader* reader = nullptr;
 
-    Solver solver = opts.getSolver();
-    int maxIter = opts.getMaxIterations();
-    double tolerance = opts.getTolerance();
+    SolverType solver = args.getSolverType();
+    InputFormat format = args.getInputFormat();
+    int maxIter = args.getMaxIterations();
+    double tolerance = args.getTolerance();
 
-    readBusDataCSV(opts.getBusDataCsv(), busData);
-    readBranchDataCSV(opts.getBranchDataCsv(), branchData);
+    switch (format) {
+    case InputFormat::IEEE:
+        reader = dynamic_cast<Reader *>(new(std::nothrow) IEEECommonDataFormat());
+        break;
+    case InputFormat::PSSE:
+        reader = dynamic_cast<Reader *>(new(std::nothrow) PSSERawFormat());
+        break;
+    default:
+        break;
+    }
+
+    reader->read(args.getInputFile());
+
+    auto busData = reader->getBusData();
+    auto& branchData = reader->getBranchData();
+
+    if (busData.ID.size() == 0 || branchData.From.size() == 0) {
+        ERROR("No bus or branch data found in '{}'. Check the file exists and is valid.", args.getInputFile());
+        delete reader;
+        return 1;
+    }
 
     auto Y = computeAdmittanceMatrix(busData, branchData);
 
     switch (solver) {
-        case Solver::GaussSeidel: {
-            double relaxation_coeff = opts.getRelaxationCoefficient();
+        case SolverType::GaussSeidel: {
+            double relaxation_coeff = args.getRelaxationCoefficient();
             GaussSeidel(Y, busData, maxIter, tolerance, relaxation_coeff);
             break;
         }
 
-        case Solver::NewtonRaphson: {
+        case SolverType::NewtonRaphson: {
             NewtonRaphson(Y, busData, maxIter, tolerance);
             break;
         }

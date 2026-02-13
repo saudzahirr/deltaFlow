@@ -20,30 +20,34 @@
 
 /**
  * @file
- * @brief Output utilities for writing power system analysis results to CSV files.
- *
- * This file declares functions for exporting simulation results (such as bus voltages, power flows, etc.)
- * to CSV files for further analysis or reporting.
+ * @brief Utility functions and helpers for deltaFlow.
  */
 
-#ifndef WRITER_H
-#define WRITER_H
+#ifndef UTILS_H
+#define UTILS_H
 
+#include <filesystem>
 #include <string>
 
-// Forward declaration
-class BusData;
-class BranchData;
-
 /**
-  * @brief Writes bus data results to a CSV file.
-  *
-  * This function exports the results contained in the \ref BusData structure to a CSV file.
-  * The output may include bus voltages, angles, power generation, loads, and other calculated quantities.
-  *
-  * @param busData The bus data structure containing simulation results.
-  * @return true if the output was successfully written, false otherwise.
+  * @namespace Utilities
+  * @brief Collection of utility functions.
   */
-bool writeOutputCSV(const BusData& busData);
+namespace Utilities {
+
+    /**
+      * @brief Check if filepath is IEEE Common Data Format.
+      * @param str The filepath.
+      * @return True if extension is .cdf, false otherwise.
+      */
+    inline bool isCommonDataFormat(const std::string& filePath) {
+      auto ext = std::filesystem::path(filePath).extension();
+      return ext == ".cdf" || ext == ".txt";
+    }
+
+    inline bool isRawFormat(const std::string& filePath) {
+        return std::filesystem::path(filePath).extension() == ".raw";
+    }
+}
 
 #endif

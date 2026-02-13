@@ -13,15 +13,13 @@ ArgumentParser::ArgumentParser(int argc, char* argv[]) {
 
 void ArgumentParser::parse_args(int argc, char* argv[]) {
     bool methodFound = false;
+    bool inputFileFound = false;
 
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
 
-        if ((arg == "--bus" || arg == "-b") && i + 1 < argc) {
-            this->busDataCsv = argv[++i];
-        }
-        else if ((arg == "--line" || arg == "-l") && i + 1 < argc) {
-            this->branchDataCsv = argv[++i];
+        if ((arg == "--job" || arg == "-j") && i + 1 < argc) {
+            this->jobName = argv[++i];
         }
         else if ((arg == "--tolerance" || arg == "-t") && i + 1 < argc) {
             this->tolerance = std::stod(argv[++i]);
@@ -40,13 +38,31 @@ void ArgumentParser::parse_args(int argc, char* argv[]) {
             help();
             std::exit(0);
         }
+        else if (!inputFileFound) {
+            this->inputFile = arg;
+
+            if (Utilities::isCommonDataFormat(arg)) {
+                this->format = InputFormat::IEEE;
+            }
+            else if (Utilities::isRawFormat(arg))
+            {
+                this->format = InputFormat::PSSE;
+            }
+            else {
+                MESSAGE("ERROR: Invalid format '{}'", arg);
+                help();
+                std::exit(1);
+            }
+
+            inputFileFound = true;
+        }
         else if (!methodFound) {
-            if (arg == "gauss-seidel") {
-                this->method = Solver::GaussSeidel;
+            if (arg == "GAUSS") {
+                this->method = SolverType::GaussSeidel;
                 methodFound = true;
             }
-            else if (arg == "newton-raphson") {
-                this->method = Solver::NewtonRaphson;
+            else if (arg == "NEWTON") {
+                this->method = SolverType::NewtonRaphson;
                 methodFound = true;
             }
             else {
@@ -56,37 +72,41 @@ void ArgumentParser::parse_args(int argc, char* argv[]) {
             }
         }
         else {
-            MESSAGE("ERROR: Unexpected extra argument '{}'", arg);
+            MESSAGE("ERROR: Unexpected argument '{}'", arg);
             help();
             std::exit(1);
         }
     }
 
-    if (!(Utilities::endswith(busDataCsv, ".csv") && Utilities::endswith(branchDataCsv, ".csv"))) {
-        MESSAGE("ERROR: Bus & branch data csv file is required.");
+    if (!inputFileFound) {
+        MESSAGE("ERROR: Input CDF file (.txt or .cdf) is required.");
         help();
         std::exit(1);
     }
 
     if (!methodFound) {
-        MESSAGE("ERROR: Missing required method argument (gauss-seidel or newton-raphson).");
+        MESSAGE("ERROR: Missing required solver argument (GAUSS or NEWTON).");
         help();
         std::exit(1);
     }
 
-    if (method == Solver::NewtonRaphson && relaxation != 1.0) {
-        MESSAGE("Warning: Relaxation coefficient ignored for method 'newton-raphson'");
+    if (jobName.empty()) {
+        jobName = std::filesystem::path(inputFile).filename().string();
+    }
+
+    if (method == SolverType::NewtonRaphson && relaxation != 1.0) {
+        MESSAGE("Warning: Relaxation coefficient ignored for method 'NEWTON'");
     }
 
     DEBUG("deltaFlow v{}", deltaFlow_VERSION);
 }
 
-std::string ArgumentParser::getBusDataCsv() const noexcept {
-    return this->busDataCsv;
+std::string ArgumentParser::getInputFile() const noexcept {
+    return this->inputFile;
 }
 
-std::string ArgumentParser::getBranchDataCsv() const noexcept {
-    return this->branchDataCsv;
+std::string ArgumentParser::getJobName() const noexcept {
+    return this->jobName;
 }
 
 double ArgumentParser::getTolerance() const noexcept {
@@ -101,30 +121,35 @@ double ArgumentParser::getRelaxationCoefficient() const noexcept {
     return this->relaxation;
 }
 
-Solver ArgumentParser::getSolver() const noexcept {
+SolverType ArgumentParser::getSolverType() const noexcept {
     return this->method;
+}
+
+InputFormat ArgumentParser::getInputFormat() const noexcept {
+    return this->format;
 }
 
 void ArgumentParser::help() const noexcept {
     MESSAGE(R"(
 Usage:
-  deltaFlow [OPTIONS] <method>
+  deltaFlow [OPTIONS] <input-file> <solver>
 
 Required:
-  -b, --bus <file>             Path to Bus Data CSV file
-  -l, --branch <file>          Path to Branch Data CSV file
-  <solver>                     Solver method: gauss-seidel | newton-raphson
+  <input-file>                 Path to input CDF file (.txt or .cdf)
+  <solver>                     Solver method: GAUSS | NEWTON
 
 Options:
+  -j, --job <name>             Job name (default: input filename)
   -t, --tolerance <value>      Convergence tolerance (default: 1E-8)
   -m, --max-iterations <int>   Maximum number of iterations (default: 1024)
-  -r, --relaxation <value>     Relaxation coefficient (only for gauss-seidel, default: 1.0)
   -h, --help                   Display this help message and exit
   -v, --version                Show program version and exit
 
 Solvers:
-  gauss-seidel                Iterative method suitable for smaller systems. Supports relaxation.
-  newton-raphson              Robust method for large or nonlinear systems. Typically converges faster,
+  GAUSS                Iterative method suitable for smaller systems.
+    -r, --relaxation <value>  Relaxation coefficient (default: 1.0)
+
+  NEWTON              Robust method for large or nonlinear systems. Typically converges faster,
                               but requires more computation per iteration.
 )");
 }

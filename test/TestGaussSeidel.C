@@ -10,6 +10,7 @@
 #include "GaussSeidel.H"
 #include "Logger.H"
 #include "Reader.H"
+#include "Writer.H"
 
 TEST_CASE("Gauss-Seidel 5-Bus Power Flow Test", "[GaussSeidel]") {
     DEBUG("Testing [GaussSeidel] - 5 Bus System Power Flow ...");

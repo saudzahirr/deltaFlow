@@ -4,7 +4,7 @@
 
 #include "GaussSeidel.H"
 #include "Logger.H"
-#include "Reader.H"
+#include "Data.H"
 #include "Utils.H"
 
 bool GaussSeidel(const Eigen::MatrixXcd& Y, BusData& busData, int maxIter, double tolerance, double omega) {

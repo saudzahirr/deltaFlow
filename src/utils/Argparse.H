@@ -22,9 +22,8 @@
  * @file
  * @brief Command-line argument parsing utilities for deltaFlow.
  *
- * This file declares the ArgumentParser class for parsing command-line options for power system analysis with deltaFlow.
- * Supported options include selecting the solver (Gauss-Seidel or Newton-Raphson), file names for bus and branch data,
- * convergence tolerance, maximum iterations, and relaxation coefficient.
+ * This file declares the ArgumentParser class for parsing command-line
+ * options for power system analysis with deltaFlow.
  */
 
 #ifndef ARGPARSE_H
@@ -39,16 +38,21 @@
   * - GaussSeidel: Gauss-Seidel iterative method.
   * - NewtonRaphson: Newton-Raphson iterative method.
   */
-enum class Solver {
+enum class SolverType {
     GaussSeidel,    ///< Gauss-Seidel iterative method
     NewtonRaphson   ///< Newton-Raphson iterative method
+};
+
+enum class InputFormat {
+  IEEE,
+  PSSE
 };
 
 /**
   * @class ArgumentParser
   * @brief Parses and stores command-line arguments for deltaFlow.
   *
-  * The ArgumentParser extracts command-line arguments related to bus/branch data files,
+  * The ArgumentParser extracts command-line arguments related to the input CDF file, job name,
   * solver selection, convergence tolerance ($$ \epsilon $$), maximum iterations ($$ N_{max} $$), and relaxation coefficient ($$ \omega $$).
   */
 class ArgumentParser final {
@@ -72,16 +76,16 @@ class ArgumentParser final {
         ArgumentParser& operator=(ArgumentParser&&) = delete;
 
         /**
-         * @brief Get the bus data CSV file name.
+         * @brief Get the input CDF file path.
          * @return File path as std::string.
          */
-        std::string getBusDataCsv() const noexcept;
+        std::string getInputFile() const noexcept;
 
         /**
-         * @brief Get the branch data CSV file name.
-         * @return File path as std::string.
+         * @brief Get the job name.
+         * @return Job name as std::string.
          */
-        std::string getBranchDataCsv() const noexcept;
+        std::string getJobName() const noexcept;
 
         /**
          * @brief Get the convergence tolerance ($$ \epsilon $$).
@@ -105,15 +109,18 @@ class ArgumentParser final {
          * @brief Get the solver type.
          * @return Solver enum (GaussSeidel or NewtonRaphson).
          */
-        Solver getSolver() const noexcept;
+        SolverType getSolverType() const noexcept;
+
+        InputFormat getInputFormat() const noexcept;
 
     private:
-        std::string busDataCsv;       ///< Path to bus data CSV file
-        std::string branchDataCsv;    ///< Path to branch data CSV file
+        std::string inputFile;        ///< Path to input CDF file
+        std::string jobName;          ///< Job name (defaults to input filename)
         double tolerance = 1E-8;      ///< Convergence tolerance ($$ \epsilon $$)
         int maxIterations = 1024;     ///< Maximum number of iterations ($$ N_{max} $$)
         double relaxation = 1.0;      ///< Relaxation coefficient ($$ \omega $$)
-        Solver method;                ///< Solver type
+        SolverType method;                ///< Solver type
+        InputFormat format;
 
         /**
          * @brief Parse the provided arguments.

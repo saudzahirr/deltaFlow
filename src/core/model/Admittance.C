@@ -2,7 +2,7 @@
 
 #include "Admittance.H"
 #include "Logger.H"
-#include "Reader.H"
+#include "Data.H"
 
 Eigen::MatrixXcd computeAdmittanceMatrix(const BusData& busData, const BranchData& branchData) {
     int nLine = branchData.From.size();

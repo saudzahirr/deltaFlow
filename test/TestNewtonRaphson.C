@@ -10,6 +10,7 @@
 #include "Logger.H"
 #include "NewtonRaphson.H"
 #include "Reader.H"
+#include "Writer.H"
 
 TEST_CASE("Newton-Raphson 5-Bus Test", "[NewtonRaphson]") {
     DEBUG("Testing [NewtonRaphson] - 5 Bus System Power Flow ...");
