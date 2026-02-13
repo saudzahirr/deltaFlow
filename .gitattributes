@@ -1,2 +1,36 @@
 **.C linguist-language=C++
 **.H linguist-language=C++
+
+# Default: normalize all text files to LF in repo
+* text=auto eol=lf
+
+# Windows-specific scripts
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts must stay LF
+*.sh text eol=lf
+*.pl text eol=lf
+
+# C/C++ / CMake
+*.C text eol=lf
+*.H text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.exe binary
+*.app binary
+*.bin binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.a binary
+*.lib binary
+*.o binary
+*.obj binary
+*.pyc binary
+*.pyo binary
+*.pyd binary

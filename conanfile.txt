@@ -1,6 +1,7 @@
 [requires]
 fmt/10.2.1
 eigen/3.4.0
+catch2/3.5.4
 
 [generators]
 CMakeDeps

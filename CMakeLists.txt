@@ -33,13 +33,7 @@ configure_file(
 option(BUILD_TEST "Build tests" OFF)
 
 if(BUILD_TEST)
-    include(FetchContent)
-    FetchContent_Declare(
-        catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG v3.5.4
-    )
-    FetchContent_MakeAvailable(catch2)
-
+    enable_testing()
+    find_package(Catch2 REQUIRED)
     add_subdirectory(test)
 endif()

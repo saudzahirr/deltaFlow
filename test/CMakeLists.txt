@@ -6,7 +6,7 @@ list(FILTER SOURCES EXCLUDE REGEX ".*/main\\.C$")
 
 add_library(deltaFlowLib STATIC ${SOURCES})
 target_include_directories(deltaFlowLib PUBLIC ${INCLUDES})
-target_link_libraries(deltaFlowLib PUBLIC fmt Eigen3)
+target_link_libraries(deltaFlowLib PUBLIC fmt::fmt Eigen3::Eigen)
 
 # Catch2 test dependencies
 set(TEST_LIBS Catch2::Catch2WithMain deltaFlowLib)
