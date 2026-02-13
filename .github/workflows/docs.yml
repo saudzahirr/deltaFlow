@@ -1,4 +1,4 @@
-name: Generate Docs and Deploy
+name: Documentation
 
 on:
   push:
@@ -6,48 +6,41 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
-  docs-deploy:
-    name: Generate Docs and Deploy
+  documentation:
+    name: Generate Documentation
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup micromamba
-        uses: mamba-org/setup-micromamba@v2
+      - uses: actions/checkout@v6
         with:
-          environment-name: docs-env
-          create-args: >
-            doxygen=1.13.2
-            graphviz
-            perl
-          generate-run-shell: true
+          fetch-depth: 0
 
-      - name: Verify Doxygen
-        run: doxygen --version
-        shell: micromamba-shell {0}
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
 
       - name: Generate documentation
-        run: |
-          perl ./bin/build.pl -d
-          echo "Contents of docs folder after generation:"
-          ls -R ./docs
-        shell: micromamba-shell {0}
+        run: python bin/build.py doxygen
 
-      - name: Verify docs exist
+      - name: Set Artifact Name
+        id: artifact-name
         run: |
-          if [ -z "$(ls -A ./docs/html)" ]; then
-            echo "No docs found! Exiting."
-            exit 1
-          fi
-        shell: micromamba-shell {0}
+          echo "artifact_name=${{ github.run_id }}[${{ github.run_attempt }}]--docs-artifacts" \
+          | tee -a $GITHUB_OUTPUT
 
-      - name: Deploy docs to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Pages Artifacts
+        uses: actions/upload-pages-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/html
-          publish_branch: gh-pages
-          keep_files: false
+          name: ${{ steps.artifact-name.outputs.artifact_name }}
+          path: docs/html
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ steps.artifact-name.outputs.artifact_name }}
