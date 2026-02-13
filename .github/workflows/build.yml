@@ -24,7 +24,7 @@ jobs:
         run: perl ./bin/build.pl -t
 
       - name: Test
-        run: ctest --output-on-failure --test-dir build
+        run: ctest --output-on-failure --test-dir build --build-config Release
 
       - name: Upload bin/ artifacts
         uses: actions/upload-artifact@v4

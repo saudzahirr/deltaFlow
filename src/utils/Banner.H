@@ -32,7 +32,12 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 #include <string>
-#include <unistd.h>
+
+#ifdef _WIN32
+  #include <windows.h>
+#else
+  #include <unistd.h>
+#endif
 
 #include "Version.H"
 
@@ -144,8 +149,15 @@ inline std::string productBox() {
     box += line("  Copyright (c) 2024 Saud Zahir");
     box += line("  Licensed under GNU GPL v3.0");
     box += line("");
+    std::string host = "unknown";
+#ifdef _WIN32
+    char hbuf[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD hbufLen = sizeof(hbuf);
+    if (GetComputerNameA(hbuf, &hbufLen)) host = std::string(hbuf);
+#else
     char hbuf[256];
-    std::string host = (gethostname(hbuf, sizeof(hbuf)) == 0) ? std::string(hbuf) : "unknown";
+    if (gethostname(hbuf, sizeof(hbuf)) == 0) host = std::string(hbuf);
+#endif
     box += line(fmt::format("  Hostname  : {}", host));
     box += rule();
 
@@ -157,8 +169,15 @@ inline std::string productBox() {
  */
 inline void printProductBox() {
     constexpr int W = 59;
+    std::string host = "unknown";
+#ifdef _WIN32
+    char hbuf[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD hbufLen = sizeof(hbuf);
+    if (GetComputerNameA(hbuf, &hbufLen)) host = std::string(hbuf);
+#else
     char hbuf[256];
-    std::string host = (gethostname(hbuf, sizeof(hbuf)) == 0) ? std::string(hbuf) : "unknown";
+    if (gethostname(hbuf, sizeof(hbuf)) == 0) host = std::string(hbuf);
+#endif
 
     auto border = [&](const std::string& text) -> std::string {
         int pad = W - 2 - static_cast<int>(text.size());

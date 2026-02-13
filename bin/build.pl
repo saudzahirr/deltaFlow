@@ -52,7 +52,7 @@ chomp(my $version = <$fh>);
 close($fh);
 
 if ($args->{build} || $args->{test}) {
-    system("conan install . --output-folder=build --build=missing") == 0
+    system("conan install . --output-folder=build --build=missing -s compiler.cppstd=17") == 0
         or die "Conan install failed\n";
 }
 

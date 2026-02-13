@@ -32,8 +32,13 @@
 #include <complex>
 #include <fstream>
 #include <string>
-#include <unistd.h>
 #include <vector>
+
+#ifdef _WIN32
+  #include <windows.h>
+#else
+  #include <unistd.h>
+#endif
 
 #include <Eigen/Dense>
 #include <fmt/chrono.h>
@@ -49,8 +54,14 @@ namespace OutputFile {
  * @brief Returns the current hostname.
  */
 inline std::string hostname() {
+#ifdef _WIN32
+    char buf[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD bufLen = sizeof(buf);
+    if (GetComputerNameA(buf, &bufLen)) return std::string(buf);
+#else
     char buf[256];
     if (gethostname(buf, sizeof(buf)) == 0) return std::string(buf);
+#endif
     return "unknown";
 }
 
