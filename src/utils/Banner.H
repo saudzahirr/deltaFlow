@@ -34,7 +34,10 @@
 #include <string>
 
 #ifdef _WIN32
+  #define WIN32_LEAN_AND_MEAN
+  #define NOMINMAX
   #include <windows.h>
+  #undef ERROR
 #else
   #include <unistd.h>
 #endif
@@ -43,7 +46,6 @@
 
 namespace Banner {
 
-// deltaFlow brand color: #9900cc (RGB: 153, 0, 204)
 constexpr fmt::rgb BRAND_COLOR{153, 0, 204};
 
 /**
@@ -227,14 +229,12 @@ inline void printProductBox() {
 /**
  * @brief Prints the colored license notice box to terminal.
  *
- * Logo, "deltaFlow", version in BRAND_COLOR (#9900cc).
- * Everything else (borders, copyright, license text) in #5a7179.
  */
 inline void printLicenseNotice() {
     constexpr int W = 67;
     constexpr int inner = W - 2;
-    constexpr fmt::rgb TEXT_COLOR{0x5a, 0x71, 0x79}; // #5a7179
-    constexpr fmt::rgb BORDER_COLOR{0x5a, 0x71, 0x79}; // #5a7179
+    constexpr fmt::rgb TEXT_COLOR{0x5a, 0x71, 0x79};
+    constexpr fmt::rgb BORDER_COLOR{0x5a, 0x71, 0x79};
 
     auto centerIn = [&](const std::string& text) -> std::string {
         int left = (inner - static_cast<int>(text.size())) / 2;

@@ -10,6 +10,8 @@ include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_compile_definitions(_USE_MATH_DEFINES)
+
 file(GLOB CMAKE_FILES "${CMAKE_SOURCE_DIR}/cmake/*.cmake")
 
 foreach(CMAKE_FILE ${CMAKE_FILES})

@@ -28,7 +28,7 @@ Logger& Logger::getLogger() {
 
 Logger::Logger(const std::string& name, Level level) : m_FilePath(name), m_Level(level) {
     file.open(m_FilePath);
-    if (not file.is_open()) {
+    if (!file.is_open()) {
         std::cerr << "Failed to open log file: " << m_FilePath << std::endl;
     }
 
