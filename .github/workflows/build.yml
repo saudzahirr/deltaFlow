@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    name: Build and Test on Multiple OS
+    name: Build and Test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
