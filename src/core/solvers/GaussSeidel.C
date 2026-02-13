@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2024 Saud Zahir
+ *
+ * This file is part of deltaFlow.
+ *
+ * deltaFlow is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * deltaFlow is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with deltaFlow.  If not, see
+ * <https://www.gnu.org/licenses/>.
+ */
+
 #include <cmath>
 #include <complex>
 #include <iostream>
@@ -17,7 +37,8 @@ bool GaussSeidel(
     int N,
     int maxIter,
     double tolerance,
-    double omega
+    double omega,
+    std::vector<std::pair<int, double>>* iterHistory
 ) {
     // Store scheduled voltage magnitudes for PV buses
     Eigen::VectorXd Vmag_sched = Vmag;
@@ -78,6 +99,7 @@ bool GaussSeidel(
 
         error = dV.norm();
         iteration++;
+        if (iterHistory) iterHistory->emplace_back(iteration, error);
         printIterationProgress("Gauss-Seidel", iteration, maxIter, error, tolerance);
     }
 

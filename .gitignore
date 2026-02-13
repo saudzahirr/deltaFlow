@@ -212,6 +212,9 @@ Thumbs.db
 Version.H
 deltaFlow*
 deltaFlow.csv
+*.sta
+*.msg
+*.dat
 *.csv~
 *.zip
 *.tar.gz
@@ -219,3 +222,4 @@ deltaFlow.csv
 *.7z
 *.gz
 *.rar
+!*.svg

@@ -1,24 +1,48 @@
+/*
+ * Copyright (c) 2024 Saud Zahir
+ *
+ * This file is part of deltaFlow.
+ *
+ * deltaFlow is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * deltaFlow is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with deltaFlow.  If not, see
+ * <https://www.gnu.org/licenses/>.
+ */
+
 #include <complex>
 #include <fstream>
 #include <iomanip>
 
-#include "Logger.H"
+#include "Banner.H"
 #include "Data.H"
+#include "Logger.H"
 #include "Writer.H"
 
 
 void dispBusData(const BusData& busData) {
     int nbus = busData.V.size();
 
-    INFO("Bus Data Summary");
-    INFO("Bus  Voltage  Angle    ------Load------    ---Generation---   Injected");
-    INFO("No.  Mag.     Degree     MW       Mvar       MW       Mvar       Mvar");
-    INFO("{}", std::string(80, '='));
+    Banner::printSectionHeader("B U S   D A T A   R E S U L T S");
+
+    fmt::print(fg(Banner::BRAND_COLOR), "   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
+        "Bus", "Voltage", "Angle", "Load", "Load", "Gen", "Gen", "Injected");
+    fmt::print(fg(Banner::BRAND_COLOR), "   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
+        "No.", "Mag.", "Degree", "MW", "Mvar", "MW", "Mvar", "Mvar");
+    fmt::print("   {}\n", std::string(76, '='));
 
     for (int i = 0; i < nbus; ++i) {
         double injectedMvar = busData.Qg(i) - busData.Ql(i);
 
-        INFO("{:>4d} {:9.4f} {:9.4f} {:10.4f} {:10.4f} {:10.4f} {:10.4f} {:10.4f}",
+        fmt::print("   {:>4d}  {:>9.4f}  {:>9.4f}  {:>10.4f} {:>10.4f}  {:>10.4f} {:>10.4f}  {:>10.4f}\n",
              i + 1,
              busData.V(i),
              busData.delta(i),
@@ -35,10 +59,13 @@ void dispBusData(const BusData& busData) {
     double totalQg = busData.Qg.sum();
     double totalInjected = totalQg - totalQl;
 
-    INFO("{}", std::string(80, '='));
-    INFO("Total{:>30.4f}{:10.4f}{:10.4f}{:10.4f}{:10.4f}",
+    fmt::print("   {}\n", std::string(76, '='));
+    fmt::print("   Total{:>27.4f} {:>10.4f}  {:>10.4f} {:>10.4f}  {:>10.4f}\n",
          totalPl, totalQl, totalPg, totalQg, totalInjected);
-    INFO("");
+    fmt::print("\n");
+
+    // Also log to file
+    INFO("Bus Data Summary: {} buses", nbus);
 }
 
 void dispLineFlow(
@@ -64,16 +91,13 @@ void dispLineFlow(
         S(i) = std::complex<double>(P, Q);
     }
 
-
-
     std::complex<double> SLT = 0.0;
 
-    INFO("");
-    INFO("Line Flow and Losses");
-    INFO("{}", std::string(80, '='));
-    INFO("--Line--  Power at bus & line flow    --Line loss--  Transformer");
-    INFO("from  to    MW      Mvar     MVA       MW      Mvar      tap");
-    INFO("{}", std::string(80, '='));
+    Banner::printSectionHeader("L I N E   F L O W   A N D   L O S S E S");
+
+    fmt::print(fg(Banner::BRAND_COLOR), "   {:>4s}  {:>4s}  {:>9s} {:>9s} {:>9s}   {:>9s} {:>9s}  {:>9s}\n",
+        "From", "To", "MW", "Mvar", "MVA", "Loss MW", "Loss Mvar", "Tap");
+    fmt::print("   {}\n", std::string(76, '='));
 
     for (int n = 1; n <= nBus; ++n) {
         int n_idx = n - 1;
@@ -85,7 +109,7 @@ void dispLineFlow(
                 double Q_inj = busData.Qg(n_idx) - busData.Ql(n_idx);
                 double S_mag = std::abs(S(n_idx)) * basemva;
 
-                INFO("{:6d}      {:9.3f} {:9.3f} {:9.3f}", n, P_inj, Q_inj, S_mag);
+                fmt::print("   {:>4d}        {:>9.3f} {:>9.3f} {:>9.3f}\n", n, P_inj, Q_inj, S_mag);
                 busprt = true;
             }
 
@@ -104,7 +128,7 @@ void dispLineFlow(
                 SLT += SL;
 
                 if (aL != 1.0) {
-                    INFO("{:12d} {:9.3f} {:9.3f} {:9.3f} {:9.3f} {:9.3f} {:9.3f}",
+                    fmt::print("         {:>4d}  {:>9.3f} {:>9.3f} {:>9.3f}   {:>9.3f} {:>9.3f}  {:>9.3f}\n",
                          k,
                          std::real(Snk),
                          std::imag(Snk),
@@ -113,7 +137,7 @@ void dispLineFlow(
                          std::imag(SL),
                          aL);
                 } else {
-                    INFO("{:12d} {:9.3f} {:9.3f} {:9.3f} {:9.3f} {:9.3f}",
+                    fmt::print("         {:>4d}  {:>9.3f} {:>9.3f} {:>9.3f}   {:>9.3f} {:>9.3f}\n",
                          k,
                          std::real(Snk),
                          std::imag(Snk),
@@ -136,7 +160,7 @@ void dispLineFlow(
 
                 SLT += SL;
 
-                INFO("{:12d} {:9.3f} {:9.3f} {:9.3f} {:9.3f} {:9.3f}",
+                fmt::print("         {:>4d}  {:>9.3f} {:>9.3f} {:>9.3f}   {:>9.3f} {:>9.3f}\n",
                      k,
                      std::real(Snk),
                      std::imag(Snk),
@@ -149,8 +173,15 @@ void dispLineFlow(
 
     SLT /= 2.0;
 
-    INFO("");
-    INFO("Total loss                         {:9.3f} {:9.3f}", std::real(SLT), std::imag(SLT));
+    fmt::print("\n");
+    fmt::print(fg(fmt::color::yellow) | fmt::emphasis::bold,
+        "   Total loss                        {:>9.3f} {:>9.3f}\n",
+        std::real(SLT), std::imag(SLT));
+    fmt::print("\n");
+
+    // Log summary
+    INFO("Line Flow computed: Total loss P={:.3f} MW, Q={:.3f} Mvar",
+        std::real(SLT), std::imag(SLT));
 }
 
 bool writeOutputCSV(const BusData& busData) {
@@ -176,5 +207,6 @@ bool writeOutputCSV(const BusData& busData) {
     }
 
     out.close();
+
     return true;
 }

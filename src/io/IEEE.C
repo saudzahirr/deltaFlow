@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2024 Saud Zahir
+ *
+ * This file is part of deltaFlow.
+ *
+ * deltaFlow is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * deltaFlow is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with deltaFlow.  If not, see
+ * <https://www.gnu.org/licenses/>.
+ */
+
 #include <algorithm>
 #include <fstream>
 #include <map>
@@ -18,6 +38,8 @@ void IEEECommonDataFormat::read(const std::string& filename) {
         ERROR("Cannot open input file: {}", filename);
         return;
     }
+
+    DEBUG("Reading IEEE Common Data Format: {}", filename);
 
     std::string line;
     std::string section;
@@ -43,9 +65,8 @@ void IEEECommonDataFormat::read(const std::string& filename) {
     while (std::getline(file, line)) {
         std::string firstToken = strip(line.substr(0, 4));
 
-        if (line.find("BUS DATA") != std::string::npos) { section = "bus"; continue; }
-        if (line.find("BRANCH DATA") != std::string::npos) { section = "branch"; continue; }
-
+        if (line.find("BUS DATA") != std::string::npos) { section = "bus"; DEBUG("Parsing BUS DATA section ..."); continue; }
+        if (line.find("BRANCH DATA") != std::string::npos) { section = "branch"; DEBUG("Parsing BRANCH DATA section ..."); continue; }
         if (line.find("-999") != std::string::npos) { section = ""; continue; }
 
         if (section == "bus" && !firstToken.empty() && std::all_of(firstToken.begin(), firstToken.end(), ::isdigit)) {
@@ -110,4 +131,5 @@ void IEEECommonDataFormat::read(const std::string& filename) {
     branchData.B = Eigen::Map<Eigen::VectorXd>(B.data(), nBranch);
     branchData.tapRatio = Eigen::Map<Eigen::VectorXd>(tap.data(), nBranch);
 
+    DEBUG("IEEE CDF parsing complete: {} bus cards, {} branch cards", nBus, nBranch);
 }
