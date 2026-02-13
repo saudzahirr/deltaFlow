@@ -23,6 +23,7 @@
  * @brief Main entry point for the deltaFlow (power flow analysis application).
  */
 
+#include <memory>
 #include "Admittance.H"
 #include "Argparse.H"
 #include "GaussSeidel.H"
@@ -38,7 +39,7 @@ int main(int argc, char* argv[]) {
     DEBUG("Input file :: {}", args.getInputFile());
     DEBUG("Job name :: {}", args.getJobName());
 
-    Reader* reader = nullptr;
+    std::unique_ptr<Reader> reader;
 
     SolverType solver = args.getSolverType();
     InputFormat format = args.getInputFormat();
@@ -47,10 +48,10 @@ int main(int argc, char* argv[]) {
 
     switch (format) {
     case InputFormat::IEEE:
-        reader = dynamic_cast<Reader *>(new(std::nothrow) IEEECommonDataFormat());
+        reader = std::make_unique<IEEECommonDataFormat>();
         break;
     case InputFormat::PSSE:
-        reader = dynamic_cast<Reader *>(new(std::nothrow) PSSERawFormat());
+        reader = std::make_unique<PSSERawFormat>();
         break;
     default:
         break;
@@ -63,8 +64,7 @@ int main(int argc, char* argv[]) {
 
     if (busData.ID.size() == 0 || branchData.From.size() == 0) {
         ERROR("No bus or branch data found in '{}'. Check the file exists and is valid.", args.getInputFile());
-        delete reader;
-        return 1;
+        std::exit(1);
     }
 
     auto Y = computeAdmittanceMatrix(busData, branchData);
