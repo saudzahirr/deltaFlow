@@ -275,9 +275,6 @@ int main(int argc, char* argv[]) {
 
     OutputFile::writeMessageFile(jobName, solverName, iterationHistory, tolerance, finalConverged);
 
-    // =====================================================
-    // Final summary to terminal
-    // =====================================================
     fmt::print("\n");
     fmt::print(fg(Banner::BRAND_COLOR) | fmt::emphasis::bold,
         "   THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY\n");

@@ -102,15 +102,12 @@ inline bool writeOutputFile(
     int nBranch = branchData.From.size();
     int W = Banner::pageWidth();
 
-    // ======================= BANNER =======================
     out << Banner::fileBanner();
 
-    // ======================= JOB INFO =======================
     out << fmt::format("\n   deltaFlow v{:<32s}Date {:>14s}   Time {:>8s}\n",
         deltaFlow_VERSION, dateStr(), timeStr());
     out << "\n";
 
-    // ======================= SYSTEM INFO =======================
     out << Banner::sectionHeader("S Y S T E M   I N F O R M A T I O N");
     out << fmt::format("   Hostname             : {}\n", hostname());
     out << fmt::format("   CMake Version        : {}\n", CMake_VERSION);
@@ -118,7 +115,6 @@ inline bool writeOutputFile(
     out << fmt::format("   deltaFlow Version    : {}\n", deltaFlow_VERSION);
     out << "\n";
 
-    // ======================= JOB PARAMETERS =======================
     out << Banner::sectionHeader("J O B   P A R A M E T E R S");
     out << fmt::format("   Job Name             : {}\n", jobName);
     out << fmt::format("   Input File           : {}\n", inputFile);
@@ -127,7 +123,6 @@ inline bool writeOutputFile(
     out << fmt::format("   Convergence Tol.     : {:.6e}\n", tolerance);
     out << "\n";
 
-    // ======================= MODEL SUMMARY =======================
     out << Banner::sectionHeader("M O D E L   S U M M A R Y");
 
     int nSlack = 0, nPV = 0, nPQ = 0;
@@ -145,7 +140,6 @@ inline bool writeOutputFile(
     out << fmt::format("   Base MVA             : {:>10.1f}\n", basemva);
     out << "\n";
 
-    // ======================= SOLVER SUMMARY =======================
     out << Banner::sectionHeader("S O L V E R   S U M M A R Y");
     out << fmt::format("   Method               : {}\n", solverName);
     out << fmt::format("   Iterations           : {:>6d}\n", iterations);
@@ -155,7 +149,6 @@ inline bool writeOutputFile(
     out << fmt::format("   Elapsed Time (sec)   : {:.3f}\n", elapsedSec);
     out << "\n";
 
-    // ======================= BUS DATA RESULTS =======================
     out << Banner::sectionHeader("B U S   D A T A   R E S U L T S");
     out << fmt::format("   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
         "Bus", "Voltage", "Angle", "Load", "Load", "Gen", "Gen", "Injected");
@@ -181,7 +174,6 @@ inline bool writeOutputFile(
         totalPl, totalQl, totalPg, totalQg, totalInjected);
     out << "\n";
 
-    // ======================= LINE FLOW RESULTS =======================
     out << Banner::sectionHeader("L I N E   F L O W   A N D   L O S S E S");
     out << fmt::format("   {:>4s}  {:>4s}  {:>9s} {:>9s} {:>9s}   {:>9s} {:>9s}  {:>9s}\n",
         "From", "To", "MW", "Mvar", "MVA", "Loss MW", "Loss Mvar", "Tap");
@@ -260,7 +252,6 @@ inline bool writeOutputFile(
         std::real(SLT), std::imag(SLT));
     out << "\n";
 
-    // ======================= JOB TIME SUMMARY =======================
     out << "\n";
     out << "\n";
     out << "     JOB TIME SUMMARY\n";
@@ -268,7 +259,6 @@ inline bool writeOutputFile(
     out << fmt::format("       WALLCLOCK TIME (SEC) = {:>12d}\n", static_cast<int>(std::round(elapsedSec)));
     out << "\n";
 
-    // ======================= ANALYSIS COMPLETE =======================
     out << Banner::sectionHeader("A N A L Y S I S   C O M P L E T E");
     out << Banner::center("THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY") << "\n";
     out << "\n";
@@ -279,7 +269,6 @@ inline bool writeOutputFile(
 
 /**
  * @brief Writes the status file (.sta) — compact solver summary
- *        inspired by Abaqus .sta and LS-DYNA .status files.
  */
 inline bool writeStatusFile(
     const std::string& jobName,
@@ -356,8 +345,7 @@ inline bool writeStatusFile(
 }
 
 /**
- * @brief Writes the message file (.msg) — detailed solver iteration log
- *        inspired by Abaqus .msg files.
+ * @brief Writes the message file (.msg)
  */
 inline bool writeMessageFile(
     const std::string& jobName,
@@ -403,8 +391,7 @@ inline bool writeMessageFile(
 }
 
 /**
- * @brief Writes the .dat file — NASTRAN-style detailed solver output
- *        with per-iteration data for every solver iteration.
+ * @brief Writes the .dat file
  */
 inline bool writeDatFile(
     const std::string& jobName,
@@ -429,12 +416,10 @@ inline bool writeDatFile(
     int nBranch = branchData.From.size();
     int W = Banner::pageWidth();
 
-    // ======================= BANNER =======================
     out << Banner::fileBanner();
     out << fmt::format("\n   deltaFlow v{:<32s}Date {:>14s}   Time {:>8s}\n",
         deltaFlow_VERSION, dateStr(), timeStr());
 
-    // ======================= INPUT PROCESSING =======================
     out << Banner::sectionHeader("I N P U T   P R O C E S S I N G");
     out << fmt::format("   Input File           : {}\n", inputFile);
     out << fmt::format("   Input Format         : {}\n", formatName);
@@ -453,7 +438,6 @@ inline bool writeDatFile(
     out << fmt::format("   Number of Branches   : {:>6d}\n", nBranch);
     out << fmt::format("   Base MVA             : {:>10.1f}\n", basemva);
 
-    // ======================= SOLVER EXECUTION =======================
     std::string solverBanner;
     for (const char &c : solverName) {
         solverBanner += std::toupper(c);
@@ -466,7 +450,6 @@ inline bool writeDatFile(
     out << fmt::format("   Convergence Tol.     : {:.6e}\n", tolerance);
     out << "\n";
 
-    // ======================= ITERATION TABLE =======================
     out << fmt::format("   {:>6s}  {:>16s}  {:>12s}  {:>8s}\n",
         "Iter", "Max Mismatch", "Tolerance", "Status");
     out << "   " << std::string(W - 4, '-') << "\n";
@@ -492,7 +475,6 @@ inline bool writeDatFile(
         out << fmt::format("   Final max mismatch = {:.6e}\n", finalError);
     }
 
-    // ======================= BUS DATA ECHO =======================
     out << Banner::sectionHeader("B U S   D A T A   R E S U L T S");
     out << fmt::format("   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
         "Bus", "Voltage", "Angle", "Load", "Load", "Gen", "Gen", "Injected");
@@ -518,14 +500,12 @@ inline bool writeDatFile(
     out << fmt::format("   Total{:>27.4f} {:>10.4f}  {:>10.4f} {:>10.4f}  {:>10.4f}\n",
         totalPl, totalQl, totalPg, totalQg, totalInjected);
 
-    // ======================= JOB TIME SUMMARY =======================
     out << "\n\n";
     out << "     JOB TIME SUMMARY\n";
     out << fmt::format("       TOTAL CPU TIME (SEC) = {:>12.5f}\n", elapsedSec);
     out << fmt::format("       WALLCLOCK TIME (SEC) = {:>12d}\n", static_cast<int>(std::round(elapsedSec)));
     out << "\n";
 
-    // ======================= ANALYSIS STATUS =======================
     out << Banner::sectionHeader("A N A L Y S I S   C O M P L E T E");
     if (converged) {
         out << Banner::center("THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY") << "\n";
@@ -538,6 +518,6 @@ inline bool writeDatFile(
     return true;
 }
 
-} // namespace OutputFile
+}
 
-#endif // OUTPUT_FILE_H
+#endif

@@ -330,6 +330,6 @@ inline void printSectionHeader(const std::string& title) {
     fmt::print("\n");
 }
 
-} // namespace Banner
+}
 
-#endif // BANNER_H
+#endif

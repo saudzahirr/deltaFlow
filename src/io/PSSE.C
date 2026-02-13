@@ -73,9 +73,6 @@ void PSSERawFormat::read(const std::string& filename) {
 
     std::string line;
 
-    // ================================================================
-    //  Header: IC, SBASE, REV, XFRRAT, NXFRAT, BASFRQ  / comment
-    // ================================================================
     std::getline(file, line);
     auto hdr = splitFields(line);
 
@@ -98,11 +95,9 @@ void PSSERawFormat::read(const std::string& filename) {
     std::getline(file, title2);
     DEBUG("PSS/E case: {}", strip(title1));
 
-    // ================================================================
     //  Bus data
     //  v32: I,'NAME',BASKV,IDE,AREA,ZONE,OWNER,VM,VA
     //  v33: I,'NAME',BASKV,IDE,AREA,ZONE,OWNER,VM,VA,NVHI,NVLO,EVHI,EVLO
-    // ================================================================
     std::vector<int> busID;
     std::vector<std::string> busName;
     std::vector<int> busType;
@@ -147,10 +142,8 @@ void PSSERawFormat::read(const std::string& filename) {
     std::vector<double> Qgmax(nBus, 0.0), Qgmin(nBus, 0.0);
     std::vector<double> Gs(nBus, 0.0), Bs(nBus, 0.0);
 
-    // ================================================================
     //  Load data
     //  I,'ID',STATUS,AREA,ZONE,PL,QL,IP,IQ,YP,YQ,OWNER,SCALE[,INTRPT]
-    // ================================================================
     while (std::getline(file, line)) {
         if (isSectionEnd(line)) break;
 
@@ -166,9 +159,7 @@ void PSSERawFormat::read(const std::string& filename) {
         Ql[idx] += std::stod(f[6]) / sbase;
     }
 
-    // ================================================================
     //  Fixed shunt data:  I,STATUS,GL,BL
-    // ================================================================
     while (std::getline(file, line)) {
         if (isSectionEnd(line)) break;
 
@@ -184,10 +175,8 @@ void PSSERawFormat::read(const std::string& filename) {
         Bs[idx] += std::stod(f[3]) / sbase;
     }
 
-    // ================================================================
     //  Generator data
     //  I,'ID',PG,QG,QT,QB,VS,IREG,MBASE,...
-    // ================================================================
     while (std::getline(file, line)) {
         if (isSectionEnd(line)) break;
 
@@ -209,10 +198,8 @@ void PSSERawFormat::read(const std::string& filename) {
         }
     }
 
-    // ================================================================
     //  Branch data
     //  I,J,'CKT',R,X,B,RATEA,RATEB,RATEC,...
-    // ================================================================
     std::vector<int> fromBus, toBus;
     std::vector<double> R_vec, X_vec, G_vec, B_vec, tap_vec;
 
@@ -234,7 +221,6 @@ void PSSERawFormat::read(const std::string& filename) {
         tap_vec.push_back(1.0);
     }
 
-    // ================================================================
     //  Transformer data (2-winding: K==0, 4-line records)
     //
     //  Line 1: I,J,K,'CKT',CW,CZ,CM,MAG1,MAG2,NMETR,'NAME',STAT,...
@@ -242,7 +228,6 @@ void PSSERawFormat::read(const std::string& filename) {
     //  Line 3: WINDV1, NOMV1, ANG1, RATA1, RATB1, RATC1, ...
     //  Line 4: WINDV2, NOMV2
     //  (3-winding adds a 5th line)
-    // ================================================================
     while (std::getline(file, line)) {
         if (isSectionEnd(line)) break;
 
@@ -294,9 +279,6 @@ void PSSERawFormat::read(const std::string& filename) {
         tap_vec.push_back(tapVal);
     }
 
-    // ================================================================
-    //  Populate data structures
-    // ================================================================
     busData.ID    = Eigen::Map<Eigen::VectorXi>(busID.data(), nBus);
     busData.Type  = Eigen::Map<Eigen::VectorXi>(busType.data(), nBus);
     busData.V     = Eigen::Map<Eigen::VectorXd>(V.data(), nBus);

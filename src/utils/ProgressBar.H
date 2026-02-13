@@ -147,4 +147,4 @@ inline void printConvergenceStatus(
     }
 }
 
-#endif // PROGRESS_BAR_H
+#endif

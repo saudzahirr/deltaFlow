@@ -72,7 +72,6 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[Admittance][5-Bus]")
     }
 
 
-    // ===== Basic structure checks =====
     REQUIRE(Y.rows() == nBus);
     REQUIRE(Y.cols() == nBus);
 
@@ -90,7 +89,6 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[Admittance][5-Bus]")
     REQUIRE(std::abs(Y(2, 3)) > 0.0); // Bus 3 <-> 4
     REQUIRE(std::abs(Y(3, 4)) > 0.0); // Bus 4 <-> 5
 
-    // ===== Full matrix comparison =====
     Eigen::MatrixXcd Y_ref(nBus, nBus);
     Y_ref <<
         std::complex<double>( 3.72902, -49.7203), std::complex<double>(0.0, 0.0),            std::complex<double>(0.0, 0.0),            std::complex<double>(0.0, 0.0),            std::complex<double>(-3.72902, 49.7203),

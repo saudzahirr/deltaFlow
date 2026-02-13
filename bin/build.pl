@@ -62,7 +62,7 @@ if ($args->{build}) {
     system("cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TEST=OFF -DPROJECT_VERSION=$version") == 0
         or die "CMake configuration failed\n";
 
-    system("cmake --build build") == 0 or die "Build failed\n";
+    system("cmake --build build --config Release") == 0 or die "Build failed\n";
 }
 
 if ($args->{test}) {
@@ -71,8 +71,8 @@ if ($args->{test}) {
     system("cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TEST=ON -DPROJECT_VERSION=$version") == 0
         or die "CMake configuration failed\n";
 
-    system("cmake --build build") == 0 or die "Build failed\n";
-    system("ctest --output-on-failure --test-dir build") == 0 or die "Tests failed\n";
+    system("cmake --build build --config Release") == 0 or die "Build failed\n";
+    system("ctest --output-on-failure --test-dir build --build-config Release") == 0 or die "Tests failed\n";
 }
 
 if ($args->{doc}) {

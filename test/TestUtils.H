@@ -249,4 +249,4 @@ inline bool solvePowerFlowGS(
     return converged;
 }
 
-#endif // TEST_UTILS_H
+#endif
