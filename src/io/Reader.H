@@ -2,6 +2,7 @@
 #define READER_H
 
 #include <string>
+
 #include "Data.H"
 
 class Reader {

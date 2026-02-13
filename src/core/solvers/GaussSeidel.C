@@ -5,6 +5,7 @@
 
 #include "GaussSeidel.H"
 #include "Logger.H"
+#include "ProgressBar.H"
 
 bool GaussSeidel(
     const Eigen::MatrixXcd& Y,
@@ -77,9 +78,11 @@ bool GaussSeidel(
 
         error = dV.norm();
         iteration++;
+        printIterationProgress("Gauss-Seidel", iteration, maxIter, error, tolerance);
     }
 
     if (iteration >= maxIter) {
+        printConvergenceStatus("Gauss-Seidel", false, iteration, maxIter, error, tolerance);
         WARN("Gauss-Seidel did not converge within max iterations ({}).", maxIter);
         DEBUG("Final error norm was {:.6e}, tolerance is {:.6e}.", error, tolerance);
         return false;
@@ -91,6 +94,7 @@ bool GaussSeidel(
         delta(i) = std::arg(V(i));
     }
 
+    printConvergenceStatus("Gauss-Seidel", true, iteration, maxIter, error, tolerance);
     DEBUG("Gauss-Seidel converged in {} iterations with error norm {:.6e}.", iteration, error);
 
     return true;

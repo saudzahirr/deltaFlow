@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
     reader->read(args.getInputFile());
 
     auto busData = reader->getBusData();
-    auto& branchData = reader->getBranchData();
+    auto branchData = reader->getBranchData();
 
     if (busData.ID.size() == 0 || branchData.From.size() == 0) {
         ERROR("No bus or branch data found in '{}'. Check the file exists and is valid.", args.getInputFile());

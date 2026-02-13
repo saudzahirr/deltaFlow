@@ -135,22 +135,21 @@ Usage:
   deltaFlow [OPTIONS] <input-file> <solver>
 
 Required:
-  <input-file>                 Path to input CDF file (.txt or .cdf)
+  <input-file>                 Path to input file (.cdf, .txt or .raw)
   <solver>                     Solver method: GAUSS | NEWTON
 
 Options:
-  -j, --job <name>             Job name (default: input filename)
+  -j, --job <name>             Job name
   -t, --tolerance <value>      Convergence tolerance (default: 1E-8)
   -m, --max-iterations <int>   Maximum number of iterations (default: 1024)
-  -h, --help                   Display this help message and exit
+  -h, --help                   Display help message
   -v, --version                Show program version and exit
 
 Solvers:
-  GAUSS                Iterative method suitable for smaller systems.
+  GAUSS                Gauss-Seidel Method
     -r, --relaxation <value>  Relaxation coefficient (default: 1.0)
 
-  NEWTON              Robust method for large or nonlinear systems. Typically converges faster,
-                              but requires more computation per iteration.
+  NEWTON               Newton-Raphson Method
 )");
 }
 

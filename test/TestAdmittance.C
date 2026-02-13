@@ -1,22 +1,20 @@
 #define CATCH_CONFIG_MAIN
-#include <catch2/catch_all.hpp>
 
+#include <catch2/catch_all.hpp>
 #include <complex>
-#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 #include "Admittance.H"
 #include "Logger.H"
-#include "Reader.H"
-#include "Utils.H"
+#include "TestUtils.H"
 
 
-TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[computeAdmittanceMatrix]") {
-    DEBUG("Testing [computeAdmittanceMatrix] - 5 Bus System ...");
+TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[Admittance][5-Bus]") {
+    DEBUG("Testing [Admittance][5-Bus] - Admittance Matrix Computation ...");
 
     BusData busData;
-    BranchData branchData;
-
-    int nBus = 5;
+    const int nBus = 5;
     busData.ID = Eigen::VectorXi(nBus);
     busData.Gs = Eigen::VectorXd(nBus);
     busData.Bs = Eigen::VectorXd(nBus);
@@ -24,20 +22,7 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[computeAdmittanceMat
     busData.Gs.setZero();
     busData.Bs.setZero();
 
-    int nBranch = 5;
-    branchData.From     = Eigen::VectorXi(nBranch);
-    branchData.To       = Eigen::VectorXi(nBranch);
-    branchData.R        = Eigen::VectorXd(nBranch);
-    branchData.X        = Eigen::VectorXd(nBranch);
-    branchData.B        = Eigen::VectorXd(nBranch);
-    branchData.tapRatio = Eigen::VectorXd(nBranch);
-
-    branchData.From     << 1, 2, 2, 3, 4;
-    branchData.To       << 5, 4, 5, 4, 5;
-    branchData.R        << 0.0015, 0.009, 0.0045, 0.00075, 0.00225;
-    branchData.X        << 0.020, 0.100, 0.050, 0.010, 0.025;
-    branchData.B        << 0.00, 1.72, 0.88, 0.00, 0.44;
-    branchData.tapRatio.setOnes();
+    auto branchData = create5BusBranchData();
 
     Eigen::MatrixXcd Y = computeAdmittanceMatrix(busData, branchData);
 

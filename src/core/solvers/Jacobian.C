@@ -1,4 +1,5 @@
 #include <cmath>
+
 #include "Jacobian.H"
 
 Eigen::MatrixXd computeJacobian(
@@ -12,7 +13,7 @@ Eigen::MatrixXd computeJacobian(
     const Eigen::VectorXd& P,
     const Eigen::VectorXd& Q
 ) {
-    // J11: (n_bus-1) x (n_bus-1) — dP/ddelta, non-slack buses
+    // J11: (n_bus-1) x (n_bus-1) - dP/ddelta, non-slack buses
     Eigen::MatrixXd J11 = Eigen::MatrixXd::Zero(n_bus - 1, n_bus - 1);
 
     for (int i = 1; i < n_bus; ++i) {
@@ -27,7 +28,7 @@ Eigen::MatrixXd computeJacobian(
         }
     }
 
-    // J21: n_pq x (n_bus-1) — dQ/ddelta, PQ rows, non-slack columns
+    // J21: n_pq x (n_bus-1) - dQ/ddelta, PQ rows, non-slack columns
     Eigen::MatrixXd J21 = Eigen::MatrixXd::Zero(n_pq, n_bus - 1);
 
     for (int i = 0; i < n_pq; ++i) {
@@ -43,7 +44,7 @@ Eigen::MatrixXd computeJacobian(
         }
     }
 
-    // J12: (n_bus-1) x n_pq — dP/dV, non-slack rows, PQ columns
+    // J12: (n_bus-1) x n_pq - dP/dV, non-slack rows, PQ columns
     Eigen::MatrixXd J12 = Eigen::MatrixXd::Zero(n_bus - 1, n_pq);
 
     for (int i = 1; i < n_bus; ++i) {
@@ -59,7 +60,7 @@ Eigen::MatrixXd computeJacobian(
         }
     }
 
-    // J22: n_pq x n_pq — dQ/dV, PQ rows and columns
+    // J22: n_pq x n_pq - dQ/dV, PQ rows and columns
     Eigen::MatrixXd J22 = Eigen::MatrixXd::Zero(n_pq, n_pq);
 
     for (int i = 0; i < n_pq; ++i) {

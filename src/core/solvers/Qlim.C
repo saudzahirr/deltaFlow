@@ -16,7 +16,7 @@ bool checkQlimits(
     const std::vector<int>& pv_bus_id,
     int n_bus
 ) {
-    // Q-limits: zero means no limit → use ±inf
+    // Q-limits: zero means no limit, using +/-inf
     Eigen::VectorXd Qmax = busData.Qgmax;
     Eigen::VectorXd Qmin = busData.Qgmin;
 
@@ -42,12 +42,12 @@ bool checkQlimits(
 
     for (int idx : pv_bus_id) {
         if (Qg(idx) > Qmax(idx)) {
-            type_bus(idx) = 3;  // PV → PQ
+            type_bus(idx) = 3;  // PV to PQ
             busData.Qg(idx) = Qmax(idx);  // Fix Q at limit for next solver run
             qlim_hit = true;
             DEBUG("Q-limit (max) hit at bus {} : Qg = {:.4f} > Qmax = {:.4f}", idx + 1, Qg(idx), Qmax(idx));
         } else if (Qg(idx) < Qmin(idx)) {
-            type_bus(idx) = 3;  // PV → PQ
+            type_bus(idx) = 3;  // PV to PQ
             busData.Qg(idx) = Qmin(idx);  // Fix Q at limit for next solver run
             qlim_hit = true;
             DEBUG("Q-limit (min) hit at bus {} : Qg = {:.4f} < Qmin = {:.4f}", idx + 1, Qg(idx), Qmin(idx));

@@ -1,7 +1,8 @@
-#include "IEEE.H"
+#include <algorithm>
 #include <fstream>
 #include <map>
-#include <algorithm>
+
+#include "IEEE.H"
 #include "Logger.H"
 
 static std::string strip(const std::string& s) {

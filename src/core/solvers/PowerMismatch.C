@@ -1,4 +1,5 @@
 #include <cmath>
+
 #include "PowerMismatch.H"
 
 Eigen::VectorXd powerMismatch(

@@ -29,8 +29,8 @@
 #ifndef WRITER_H
 #define WRITER_H
 
-#include <string>
 #include <Eigen/Dense>
+#include <string>
 
 // Forward declaration
 class BusData;

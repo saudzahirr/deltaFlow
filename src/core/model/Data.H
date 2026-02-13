@@ -31,7 +31,6 @@
 #define DATA_OBJECT_H
 
 #include <Eigen/Dense>
-
 #include <string>
 #include <vector>
 

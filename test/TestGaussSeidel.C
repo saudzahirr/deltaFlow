@@ -1,146 +1,18 @@
 #define CATCH_CONFIG_MAIN
+
 #include <catch2/catch_all.hpp>
-#include <Eigen/Dense>
 
-#include <cmath>
-#include <complex>
-#include <iostream>
-
-#include "Admittance.H"
-#include "GaussSeidel.H"
-#include "Qlim.H"
 #include "Logger.H"
-#include "Reader.H"
-#include "Writer.H"
+#include "TestUtils.H"
 
-TEST_CASE("Gauss-Seidel 5-Bus Power Flow Test", "[GaussSeidel]") {
-    DEBUG("Testing [GaussSeidel] - 5 Bus System Power Flow ...");
+TEST_CASE("Gauss-Seidel 5-Bus Power Flow Test", "[Gauss-Seidel][5-Bus]") {
+    DEBUG("Testing [Gauss-Seidel][5-Bus] - 5 Bus System Power Flow ...");
 
-    const int N = 5;
+    auto busData    = create5BusBusData();
+    auto branchData = create5BusBranchData();
+    const int N = busData.ID.size();
 
-    // Setup bus data
-    BusData busData;
-    busData.ID     = Eigen::VectorXi::LinSpaced(N, 1, N);
-    busData.Type   = Eigen::VectorXi(N);
-    busData.V      = Eigen::VectorXd::Constant(N, 1.0);  // Initial guess
-    busData.delta  = Eigen::VectorXd::Zero(N);           // Degrees
-    busData.Pg     = Eigen::VectorXd::Zero(N);
-    busData.Qg     = Eigen::VectorXd::Zero(N);
-    busData.Pl     = Eigen::VectorXd::Zero(N);
-    busData.Ql     = Eigen::VectorXd::Zero(N);
-    busData.Qgmax  = Eigen::VectorXd::Constant(N, 0.0);
-    busData.Qgmin  = Eigen::VectorXd::Constant(N, 0.0);
-    busData.Gs     = Eigen::VectorXd::Zero(N);
-    busData.Bs     = Eigen::VectorXd::Zero(N);
-
-    // Bus types
-    busData.Type << 1, 3, 2, 3, 3;
-
-    // Set PV bus voltage
-    busData.V(2) = 1.05;
-
-    // Set loads and generation
-    busData.Pl(1) = 8.0;
-    busData.Ql(1) = 2.8;
-
-    busData.Pl(2) = 0.8;
-    busData.Ql(2) = 0.4;
-    busData.Pg(2) = 5.2;
-    busData.Qgmax(2) = 4.0;
-    busData.Qgmin(2) = -2.8;
-
-    // Setup branch data
-    BranchData branchData;
-    const int nBranch = 5;
-    branchData.From     = Eigen::VectorXi(nBranch);
-    branchData.To       = Eigen::VectorXi(nBranch);
-    branchData.R        = Eigen::VectorXd(nBranch);
-    branchData.X        = Eigen::VectorXd(nBranch);
-    branchData.B        = Eigen::VectorXd(nBranch);
-    branchData.tapRatio = Eigen::VectorXd::Constant(nBranch, 1.0);
-
-    branchData.From << 1, 2, 2, 3, 4;
-    branchData.To   << 5, 4, 5, 4, 5;
-    branchData.R    << 0.0015, 0.009, 0.0045, 0.00075, 0.00225;
-    branchData.X    << 0.02,   0.1,   0.05,   0.01,    0.025;
-    branchData.B    << 0.00,   1.72,  0.88,   0.00,    0.44;
-
-    Eigen::MatrixXcd Y = computeAdmittanceMatrix(busData, branchData);
-
-    // Extract G and B from Y_bus (for Q-limit check)
-    Eigen::MatrixXd G = Y.array().real().matrix();
-    Eigen::MatrixXd B = Y.array().imag().matrix();
-
-    // Flat start: PQ buses -> V=1.0, delta=0; PV/Slack keep file voltage
-    Eigen::VectorXd V(N);
-    Eigen::VectorXd delta_rad = Eigen::VectorXd::Zero(N);
-
-    for (int i = 0; i < N; ++i) {
-        if (busData.Type(i) == 3) {
-            V(i) = 1.0;
-        } else {
-            V(i) = busData.V(i);
-        }
-    }
-
-    // Working copy of bus types (modified during Q-limit loop)
-    Eigen::VectorXi type_bus = busData.Type;
-
-    // Outer Q-limit loop
-    bool Q_lim_status = true;
-    bool converged = false;
-
-    while (Q_lim_status) {
-        Eigen::VectorXd Ps = busData.Pg - busData.Pl;
-        Eigen::VectorXd Qs = busData.Qg - busData.Ql;
-
-        std::vector<int> pv_indices;
-        for (int i = 0; i < N; ++i)
-            if (type_bus(i) == 2) pv_indices.push_back(i);
-
-        converged = GaussSeidel(Y, V, delta_rad, type_bus, Ps, Qs, N,
-                                 1024, 1E-8, 1.0);
-
-        if (!converged) break;
-
-        Q_lim_status = checkQlimits(V, delta_rad, type_bus, G, B,
-                                     busData, pv_indices, N);
-    }
-
-    // Post-convergence: update busData
-    Eigen::VectorXcd Vc(N);
-    for (int i = 0; i < N; ++i)
-        Vc(i) = std::polar(V(i), delta_rad(i));
-
-    Eigen::VectorXd P_net = busData.Pg - busData.Pl;
-    Eigen::VectorXd Q_net = busData.Qg - busData.Ql;
-
-    for (int i = 0; i < N; ++i) {
-        if (busData.Type(i) == 1) {
-            std::complex<double> Ii = Y.row(i) * Vc;
-            std::complex<double> Si = Vc(i) * std::conj(Ii);
-            P_net(i) = Si.real();
-            Q_net(i) = Si.imag();
-        }
-    }
-
-    for (int i = 0; i < N; ++i) {
-        if (busData.Type(i) == 2) {
-            std::complex<double> Ii = Y.row(i) * Vc;
-            Q_net(i) = -std::imag(std::conj(Vc(i)) * Ii);
-        }
-    }
-
-    for (int i = 0; i < N; ++i) {
-        busData.V(i) = std::abs(Vc(i));
-        busData.delta(i) = std::arg(Vc(i)) * 180.0 / M_PI;
-        busData.Pg(i) = P_net(i) + busData.Pl(i);
-        busData.Qg(i) = Q_net(i) + busData.Ql(i);
-    }
-
-    dispBusData(busData);
-    dispLineFlow(busData, branchData, Y);
-
+    bool converged = solvePowerFlowGS(busData, branchData);
     REQUIRE(converged);
 
     // Voltage magnitudes
