@@ -80,8 +80,6 @@ API documentation is generated with Doxygen:
 ./bin/build.pl -d
 ```
 
-Output is written to `docs/html/`. Open `docs/html/index.html` in a browser.
-
 ---
 
 ## License
