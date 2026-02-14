@@ -32,7 +32,7 @@
 
 #include "Admittance.H"
 #include "Argparse.H"
-#include "Banner.H"
+#include "Display.H"
 #include "GaussSeidel.H"
 #include "IEEE.H"
 #include "Logger.H"
@@ -44,7 +44,7 @@
 #include "Writer.H"
 
 int main(int argc, char* argv[]) {
-    Banner::printTerminalBanner();
+    Display::printTerminalBanner();
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -276,7 +276,7 @@ int main(int argc, char* argv[]) {
     OutputFile::writeMessageFile(jobName, solverName, iterationHistory, tolerance, finalConverged);
 
     fmt::print("\n");
-    fmt::print(fg(Banner::BRAND_COLOR) | fmt::emphasis::bold,
+    fmt::print(fg(Display::BRAND_COLOR) | fmt::emphasis::bold,
         "   THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY\n");
     fmt::print("\n");
     fmt::print("   Elapsed time : {:.3f} sec\n", elapsedSec);

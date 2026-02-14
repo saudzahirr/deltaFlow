@@ -22,7 +22,7 @@
 #include <fstream>
 #include <iomanip>
 
-#include "Banner.H"
+#include "Display.H"
 #include "Data.H"
 #include "Logger.H"
 #include "Writer.H"
@@ -31,11 +31,11 @@
 void dispBusData(const BusData& busData) {
     int nbus = busData.V.size();
 
-    Banner::printSectionHeader("B U S   D A T A   R E S U L T S");
+    Display::printSectionHeader("B U S   D A T A   R E S U L T S");
 
-    fmt::print(fg(Banner::BRAND_COLOR), "   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
+    fmt::print(fg(Display::BRAND_COLOR), "   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
         "Bus", "Voltage", "Angle", "Load", "Load", "Gen", "Gen", "Injected");
-    fmt::print(fg(Banner::BRAND_COLOR), "   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
+    fmt::print(fg(Display::BRAND_COLOR), "   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
         "No.", "Mag.", "Degree", "MW", "Mvar", "MW", "Mvar", "Mvar");
     fmt::print("   {}\n", std::string(76, '='));
 
@@ -93,9 +93,9 @@ void dispLineFlow(
 
     std::complex<double> SLT = 0.0;
 
-    Banner::printSectionHeader("L I N E   F L O W   A N D   L O S S E S");
+    Display::printSectionHeader("L I N E   F L O W   A N D   L O S S E S");
 
-    fmt::print(fg(Banner::BRAND_COLOR), "   {:>4s}  {:>4s}  {:>9s} {:>9s} {:>9s}   {:>9s} {:>9s}  {:>9s}\n",
+    fmt::print(fg(Display::BRAND_COLOR), "   {:>4s}  {:>4s}  {:>9s} {:>9s} {:>9s}   {:>9s} {:>9s}  {:>9s}\n",
         "From", "To", "MW", "Mvar", "MVA", "Loss MW", "Loss Mvar", "Tap");
     fmt::print("   {}\n", std::string(76, '='));
 

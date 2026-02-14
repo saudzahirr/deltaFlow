@@ -23,7 +23,7 @@
 #include <stdexcept>
 
 #include "Argparse.H"
-#include "Banner.H"
+#include "Display.H"
 #include "Logger.H"
 #include "Utils.H"
 #include "Version.H"
@@ -52,7 +52,6 @@ void ArgumentParser::parse_args(int argc, char* argv[]) {
             this->relaxation = std::stod(argv[++i]);
         }
         else if (arg == "--version" || arg == "-v") {
-            version();
             std::exit(0);
         }
         else if (arg == "--help" || arg == "-h") {
@@ -152,7 +151,6 @@ InputFormat ArgumentParser::getInputFormat() const noexcept {
 }
 
 void ArgumentParser::help() const noexcept {
-    Banner::printTerminalBanner();
     LOG_MESSAGE(R"(
 Usage:
   deltaFlow [OPTIONS] <input-file> <solver>
@@ -174,8 +172,4 @@ Solvers:
 
   NEWTON               Newton-Raphson Method
 )");
-}
-
-void ArgumentParser::version() const noexcept {
-    Banner::printTerminalBanner();
 }

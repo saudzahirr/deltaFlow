@@ -46,7 +46,7 @@ inline std::string testDataDir(const std::string& subdir = "IEEE") {
 }
 
 // ---------------------------------------------------------------------------
-//  5-Bus test system (used by Admittance, Newton-Raphson, Gauss-Seidel tests)
+//  5-Bus test system
 // ---------------------------------------------------------------------------
 
 inline BusData create5BusBusData() {

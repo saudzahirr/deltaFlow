@@ -44,7 +44,7 @@
 #include <fmt/chrono.h>
 #include <fmt/core.h>
 
-#include "Banner.H"
+#include "Display.H"
 #include "Data.H"
 #include "Version.H"
 
@@ -111,22 +111,22 @@ inline bool writeOutputFile(
 
     int nBus = busData.V.size();
     int nBranch = branchData.From.size();
-    int W = Banner::pageWidth();
+    int W = Display::pageWidth;
 
-    out << Banner::fileBanner();
+    out << Display::fileBanner();
 
     out << fmt::format("\n   deltaFlow v{:<32s}Date {:>14s}   Time {:>8s}\n",
         deltaFlow_VERSION, dateStr(), timeStr());
     out << "\n";
 
-    out << Banner::sectionHeader("S Y S T E M   I N F O R M A T I O N");
+    out << Display::sectionHeader("S Y S T E M   I N F O R M A T I O N");
     out << fmt::format("   Hostname             : {}\n", hostname());
     out << fmt::format("   CMake Version        : {}\n", CMake_VERSION);
     out << fmt::format("   Compiler Version     : GCC {}\n", gcc_VERSION);
     out << fmt::format("   deltaFlow Version    : {}\n", deltaFlow_VERSION);
     out << "\n";
 
-    out << Banner::sectionHeader("J O B   P A R A M E T E R S");
+    out << Display::sectionHeader("J O B   P A R A M E T E R S");
     out << fmt::format("   Job Name             : {}\n", jobName);
     out << fmt::format("   Input File           : {}\n", inputFile);
     out << fmt::format("   Input Format         : {}\n", formatName);
@@ -134,7 +134,7 @@ inline bool writeOutputFile(
     out << fmt::format("   Convergence Tol.     : {:.6e}\n", tolerance);
     out << "\n";
 
-    out << Banner::sectionHeader("M O D E L   S U M M A R Y");
+    out << Display::sectionHeader("M O D E L   S U M M A R Y");
 
     int nSlack = 0, nPV = 0, nPQ = 0;
     for (int i = 0; i < nBus; ++i) {
@@ -151,7 +151,7 @@ inline bool writeOutputFile(
     out << fmt::format("   Base MVA             : {:>10.1f}\n", basemva);
     out << "\n";
 
-    out << Banner::sectionHeader("S O L V E R   S U M M A R Y");
+    out << Display::sectionHeader("S O L V E R   S U M M A R Y");
     out << fmt::format("   Method               : {}\n", solverName);
     out << fmt::format("   Iterations           : {:>6d}\n", iterations);
     out << fmt::format("   Final Error          : {:.6e}\n", finalError);
@@ -160,7 +160,7 @@ inline bool writeOutputFile(
     out << fmt::format("   Elapsed Time (sec)   : {:.3f}\n", elapsedSec);
     out << "\n";
 
-    out << Banner::sectionHeader("B U S   D A T A   R E S U L T S");
+    out << Display::sectionHeader("B U S   D A T A   R E S U L T S");
     out << fmt::format("   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
         "Bus", "Voltage", "Angle", "Load", "Load", "Gen", "Gen", "Injected");
     out << fmt::format("   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
@@ -185,7 +185,7 @@ inline bool writeOutputFile(
         totalPl, totalQl, totalPg, totalQg, totalInjected);
     out << "\n";
 
-    out << Banner::sectionHeader("L I N E   F L O W   A N D   L O S S E S");
+    out << Display::sectionHeader("L I N E   F L O W   A N D   L O S S E S");
     out << fmt::format("   {:>4s}  {:>4s}  {:>9s} {:>9s} {:>9s}   {:>9s} {:>9s}  {:>9s}\n",
         "From", "To", "MW", "Mvar", "MVA", "Loss MW", "Loss Mvar", "Tap");
     out << "   " << std::string(W - 4, '=') << "\n";
@@ -270,8 +270,8 @@ inline bool writeOutputFile(
     out << fmt::format("       WALLCLOCK TIME (SEC) = {:>12d}\n", static_cast<int>(std::round(elapsedSec)));
     out << "\n";
 
-    out << Banner::sectionHeader("A N A L Y S I S   C O M P L E T E");
-    out << Banner::center("THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY") << "\n";
+    out << Display::sectionHeader("A N A L Y S I S   C O M P L E T E");
+    out << Display::center("THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY") << "\n";
     out << "\n";
 
     out.close();
@@ -369,17 +369,17 @@ inline bool writeMessageFile(
     std::ofstream out(msgFile);
     if (!out.is_open()) return false;
 
-    out << Banner::fileBanner();
+    out << Display::fileBanner();
 
     out << fmt::format("\n   deltaFlow v{:<32s}Date {:>14s}   Time {:>8s}\n",
         deltaFlow_VERSION, dateStr(), timeStr());
     out << "\n";
 
-    out << Banner::sectionHeader("I T E R A T I O N   H I S T O R Y");
+    out << Display::sectionHeader("I T E R A T I O N   H I S T O R Y");
 
     out << fmt::format("   {:>6s}  {:>16s}  {:>12s}  {:>8s}\n",
         "Iter", "Max Mismatch", "Tolerance", "Status");
-    out << "   " << std::string(Banner::pageWidth() - 4, '-') << "\n";
+    out << "   " << std::string(Display::pageWidth - 4, '-') << "\n";
 
     for (const auto& [iter, error] : iterationHistory) {
         std::string status = (error < tolerance) ? "CONV" : "";
@@ -387,7 +387,7 @@ inline bool writeMessageFile(
             iter, error, tolerance, status);
     }
 
-    out << "   " << std::string(Banner::pageWidth() - 4, '-') << "\n";
+    out << "   " << std::string(Display::pageWidth - 4, '-') << "\n";
     out << "\n";
 
     if (converged) {
@@ -425,13 +425,13 @@ inline bool writeDatFile(
 
     int nBus = busData.V.size();
     int nBranch = branchData.From.size();
-    int W = Banner::pageWidth();
+    int W = Display::pageWidth;
 
-    out << Banner::fileBanner();
+    out << Display::fileBanner();
     out << fmt::format("\n   deltaFlow v{:<32s}Date {:>14s}   Time {:>8s}\n",
         deltaFlow_VERSION, dateStr(), timeStr());
 
-    out << Banner::sectionHeader("I N P U T   P R O C E S S I N G");
+    out << Display::sectionHeader("I N P U T   P R O C E S S I N G");
     out << fmt::format("   Input File           : {}\n", inputFile);
     out << fmt::format("   Input Format         : {}\n", formatName);
 
@@ -454,7 +454,7 @@ inline bool writeDatFile(
         solverBanner += std::toupper(c);
         solverBanner += ' ';
     }
-    out << Banner::sectionHeader(solverBanner + "   S O L V E R   E X E C U T I O N");
+    out << Display::sectionHeader(solverBanner + "   S O L V E R   E X E C U T I O N");
     out << fmt::format("   Method               : {}\n", solverName);
     out << fmt::format("   Max Iterations       : {:>6d}\n", static_cast<int>(iterationHistory.size()) > 0 ?
         static_cast<int>(iterationHistory.back().first) : totalIterations);
@@ -486,7 +486,7 @@ inline bool writeDatFile(
         out << fmt::format("   Final max mismatch = {:.6e}\n", finalError);
     }
 
-    out << Banner::sectionHeader("B U S   D A T A   R E S U L T S");
+    out << Display::sectionHeader("B U S   D A T A   R E S U L T S");
     out << fmt::format("   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
         "Bus", "Voltage", "Angle", "Load", "Load", "Gen", "Gen", "Injected");
     out << fmt::format("   {:>4s}  {:>9s}  {:>9s}  {:>10s} {:>10s}  {:>10s} {:>10s}  {:>10s}\n",
@@ -517,11 +517,11 @@ inline bool writeDatFile(
     out << fmt::format("       WALLCLOCK TIME (SEC) = {:>12d}\n", static_cast<int>(std::round(elapsedSec)));
     out << "\n";
 
-    out << Banner::sectionHeader("A N A L Y S I S   C O M P L E T E");
+    out << Display::sectionHeader("A N A L Y S I S   C O M P L E T E");
     if (converged) {
-        out << Banner::center("THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY") << "\n";
+        out << Display::center("THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY") << "\n";
     } else {
-        out << Banner::center("*** THE ANALYSIS HAS NOT CONVERGED ***") << "\n";
+        out << Display::center("*** THE ANALYSIS HAS NOT CONVERGED ***") << "\n";
     }
     out << "\n";
 

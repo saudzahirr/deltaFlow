@@ -27,7 +27,7 @@
 #include "NewtonRaphson.H"
 #include "Jacobian.H"
 #include "PowerMismatch.H"
-#include "ProgressBar.H"
+#include "Progress.H"
 #include "Data.H"
 #include "Utils.H"
 

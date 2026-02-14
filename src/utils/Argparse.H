@@ -134,10 +134,6 @@ class ArgumentParser final {
          */
         void help() const noexcept;
 
-        /**
-         * @brief Print version information to stdout.
-         */
-        void version() const noexcept;
 };
 
 #endif

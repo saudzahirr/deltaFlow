@@ -24,13 +24,9 @@
 
 #include "IEEE.H"
 #include "Logger.H"
+#include "Utils.H"
 
-static std::string strip(const std::string& s) {
-    auto start = s.find_first_not_of(" \t\r\n");
-    if (start == std::string::npos) return "";
-    auto end = s.find_last_not_of(" \t\r\n");
-    return s.substr(start, end - start + 1);
-}
+using Utilities::strip;
 
 void IEEECommonDataFormat::read(const std::string& filename) {
     std::ifstream file(filename);

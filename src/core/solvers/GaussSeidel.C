@@ -25,7 +25,7 @@
 
 #include "GaussSeidel.H"
 #include "Logger.H"
-#include "ProgressBar.H"
+#include "Progress.H"
 
 bool GaussSeidel(
     const Eigen::MatrixXcd& Y,

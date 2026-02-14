@@ -26,20 +26,10 @@
 
 #include "Logger.H"
 #include "PSSE.H"
+#include "Utils.H"
 
-static std::string strip(const std::string& s) {
-    auto start = s.find_first_not_of(" \t\r\n");
-    if (start == std::string::npos) return "";
-    auto end = s.find_last_not_of(" \t\r\n");
-    return s.substr(start, end - start + 1);
-}
-
-static std::string stripQuotes(const std::string& s) {
-    std::string t = strip(s);
-    if (t.size() >= 2 && t.front() == '\'' && t.back() == '\'')
-        return strip(t.substr(1, t.size() - 2));
-    return t;
-}
+using Utilities::strip;
+using Utilities::stripQuotes;
 
 static std::vector<std::string> splitFields(const std::string& line) {
     std::vector<std::string> fields;

@@ -28,7 +28,6 @@
 TEST_CASE("Newton-Raphson Divergence Test", "[Newton-Raphson][Divergence]") {
     LOG_DEBUG("Testing [Newton-Raphson][Divergence] - Expected failure case ...");
 
-    // Use the standard 5-bus system but with extreme load to cause divergence
     auto busData    = create5BusBusData();
     auto branchData = create5BusBranchData();
 
@@ -38,7 +37,6 @@ TEST_CASE("Newton-Raphson Divergence Test", "[Newton-Raphson][Divergence]") {
     busData.Pl(3) = 500.0;
     busData.Ql(3) = 200.0;
 
-    // Allow only a few iterations so the red bar is clearly visible
     bool converged = solvePowerFlowNR(busData, branchData, 10, 1E-8);
     REQUIRE_FALSE(converged);
 }
