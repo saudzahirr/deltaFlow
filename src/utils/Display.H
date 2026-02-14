@@ -120,7 +120,7 @@ namespace Display {
      */
     inline std::vector<LicenseLine> licenseContent() {
         constexpr int inner = licenseBoxWidth - 2;
-        auto mid = [](const std::string& t) { return centerIn(t, inner); };
+        auto mid = [inner](const std::string& t) { return centerIn(t, inner); };
 
         return {
             {"",                                                            false},
