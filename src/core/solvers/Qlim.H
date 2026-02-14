@@ -35,7 +35,7 @@
 
 #include <Eigen/Dense>
 
-class BusData;
+struct BusData;
 
 /**
  * @brief Checks reactive power limits on PV buses after solver convergence.

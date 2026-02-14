@@ -81,8 +81,8 @@
 #include <utility>
 #include <vector>
 
-class BranchData;
-class BusData;
+struct BranchData;
+struct BusData;
 
 /**
   * @brief Solves the power flow equations using the Newton-Raphson iterative method.
