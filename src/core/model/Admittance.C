@@ -60,7 +60,7 @@ Eigen::MatrixXcd computeAdmittanceMatrix(const BusData& busData, const BranchDat
         int busIndex = busData.ID(n) - 1;  // Convert to 0-based
 
         if (busIndex < 0 || busIndex >= Ybus.rows()) {
-            ERROR("Warning: Bus ID {} out of bounds in Ybus", busIndex + 1);
+            LOG_ERROR("Warning: Bus ID {} out of bounds in Ybus", busIndex + 1);
             continue;
         }
 

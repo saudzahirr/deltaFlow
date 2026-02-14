@@ -26,7 +26,7 @@
 #include "TestUtils.H"
 
 TEST_CASE("Newton-Raphson Divergence Test", "[Newton-Raphson][Divergence]") {
-    DEBUG("Testing [Newton-Raphson][Divergence] - Expected failure case ...");
+    LOG_DEBUG("Testing [Newton-Raphson][Divergence] - Expected failure case ...");
 
     // Use the standard 5-bus system but with extreme load to cause divergence
     auto busData    = create5BusBusData();
@@ -44,7 +44,7 @@ TEST_CASE("Newton-Raphson Divergence Test", "[Newton-Raphson][Divergence]") {
 }
 
 TEST_CASE("Gauss-Seidel Divergence Test", "[Gauss-Seidel][Divergence]") {
-    DEBUG("Testing [Gauss-Seidel][Divergence] - Expected failure case ...");
+    LOG_DEBUG("Testing [Gauss-Seidel][Divergence] - Expected failure case ...");
 
     auto busData    = create5BusBusData();
     auto branchData = create5BusBranchData();

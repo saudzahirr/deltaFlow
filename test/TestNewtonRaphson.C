@@ -26,7 +26,7 @@
 #include "TestUtils.H"
 
 TEST_CASE("Newton-Raphson 5-Bus Test", "[Newton-Raphson][5-Bus]") {
-    DEBUG("Testing [Newton-Raphson][5-Bus] - 5 Bus System Power Flow ...");
+    LOG_DEBUG("Testing [Newton-Raphson][5-Bus] - 5 Bus System Power Flow ...");
 
     auto busData    = create5BusBusData();
     auto branchData = create5BusBranchData();

@@ -65,7 +65,7 @@ void dispBusData(const BusData& busData) {
     fmt::print("\n");
 
     // Also log to file
-    INFO("Bus Data Summary: {} buses", nbus);
+    LOG_INFO("Bus Data Summary: {} buses", nbus);
 }
 
 void dispLineFlow(
@@ -180,7 +180,7 @@ void dispLineFlow(
     fmt::print("\n");
 
     // Log summary
-    INFO("Line Flow computed: Total loss P={:.3f} MW, Q={:.3f} Mvar",
+    LOG_INFO("Line Flow computed: Total loss P={:.3f} MW, Q={:.3f} Mvar",
         std::real(SLT), std::imag(SLT));
 }
 

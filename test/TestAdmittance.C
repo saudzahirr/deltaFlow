@@ -31,7 +31,7 @@
 
 
 TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[Admittance][5-Bus]") {
-    DEBUG("Testing [Admittance][5-Bus] - Admittance Matrix Computation ...");
+    LOG_DEBUG("Testing [Admittance][5-Bus] - Admittance Matrix Computation ...");
 
     BusData busData;
     const int nBus = 5;
@@ -46,8 +46,8 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[Admittance][5-Bus]")
 
     Eigen::MatrixXcd Y = computeAdmittanceMatrix(busData, branchData);
 
-    DEBUG("Admittance Matrix");
-    DEBUG("{}", std::string(80, '='));
+    LOG_DEBUG("Admittance Matrix");
+    LOG_DEBUG("{}", std::string(80, '='));
     for (int i = 0; i < Y.rows(); ++i) {
         std::stringstream rowStream;
         for (int j = 0; j < Y.cols(); ++j) {
@@ -68,7 +68,7 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[Admittance][5-Bus]")
             if (j != Y.cols() - 1)
                 rowStream << "\t";
         }
-        DEBUG("{}", rowStream.str().c_str());
+        LOG_DEBUG("{}", rowStream.str().c_str());
     }
 
 
@@ -102,7 +102,7 @@ TEST_CASE("Admittance Matrix Computation - 5 Bus System", "[Admittance][5-Bus]")
         for (int j = 0; j < nBus; ++j) {
             auto x = std::abs(Y(i, j).real() - Y_ref(i, j).real());
             auto y = std::abs(Y(i, j).imag() - Y_ref(i, j).imag());
-            DEBUG("Mismatch at ({}, {}): {} + {}i", i, j, x, y);
+            LOG_DEBUG("Mismatch at ({}, {}): {} + {}i", i, j, x, y);
             REQUIRE(x < tol);
             REQUIRE(y < tol);
         }

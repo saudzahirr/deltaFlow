@@ -13,7 +13,7 @@ set(TEST_LIBS Catch2::Catch2WithMain deltaFlowLib)
 
 # Helper macro to add a test executable
 macro(ADD_DELTAFLOW_TEST TEST_NAME)
-    add_executable(${TEST_NAME} ${TEST_NAME}.C ${SOURCES})
+    add_executable(${TEST_NAME} ${TEST_NAME}.C)
     target_link_libraries(${TEST_NAME} PRIVATE ${TEST_LIBS})
     target_include_directories(${TEST_NAME} PRIVATE ${EIGEN3_INCLUDE_DIRS} .)
     catch_discover_tests(${TEST_NAME})

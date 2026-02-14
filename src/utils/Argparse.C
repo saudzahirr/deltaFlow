@@ -70,7 +70,7 @@ void ArgumentParser::parse_args(int argc, char* argv[]) {
                 this->format = InputFormat::PSSE;
             }
             else {
-                MESSAGE("ERROR: Invalid format '{}'", arg);
+                LOG_MESSAGE("ERROR: Invalid format '{}'", arg);
                 help();
                 std::exit(1);
             }
@@ -87,26 +87,26 @@ void ArgumentParser::parse_args(int argc, char* argv[]) {
                 methodFound = true;
             }
             else {
-                MESSAGE("ERROR: Invalid method '{}'", arg);
+                LOG_MESSAGE("ERROR: Invalid method '{}'", arg);
                 help();
                 std::exit(1);
             }
         }
         else {
-            MESSAGE("ERROR: Unexpected argument '{}'", arg);
+            LOG_MESSAGE("ERROR: Unexpected argument '{}'", arg);
             help();
             std::exit(1);
         }
     }
 
     if (!inputFileFound) {
-        MESSAGE("ERROR: Input CDF file (.txt or .cdf) is required.");
+        LOG_MESSAGE("ERROR: Input CDF file (.txt or .cdf) is required.");
         help();
         std::exit(1);
     }
 
     if (!methodFound) {
-        MESSAGE("ERROR: Missing required solver argument (GAUSS or NEWTON).");
+        LOG_MESSAGE("ERROR: Missing required solver argument (GAUSS or NEWTON).");
         help();
         std::exit(1);
     }
@@ -116,11 +116,11 @@ void ArgumentParser::parse_args(int argc, char* argv[]) {
     }
 
     if (method == SolverType::NewtonRaphson && relaxation != 1.0) {
-        MESSAGE("Warning: Relaxation coefficient ignored for method 'NEWTON'");
+        LOG_MESSAGE("Warning: Relaxation coefficient ignored for method 'NEWTON'");
     }
 
-    DEBUG("deltaFlow v{}", deltaFlow_VERSION);
-    DEBUG("CMake v{}, GCC v{}", CMake_VERSION, gcc_VERSION);
+    LOG_DEBUG("deltaFlow v{}", deltaFlow_VERSION);
+    LOG_DEBUG("CMake v{}, GCC v{}", CMake_VERSION, gcc_VERSION);
 }
 
 std::string ArgumentParser::getInputFile() const noexcept {
@@ -153,7 +153,7 @@ InputFormat ArgumentParser::getInputFormat() const noexcept {
 
 void ArgumentParser::help() const noexcept {
     Banner::printTerminalBanner();
-    MESSAGE(R"(
+    LOG_MESSAGE(R"(
 Usage:
   deltaFlow [OPTIONS] <input-file> <solver>
 

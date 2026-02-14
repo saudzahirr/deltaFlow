@@ -35,11 +35,11 @@ static std::string strip(const std::string& s) {
 void IEEECommonDataFormat::read(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
-        ERROR("Cannot open input file: {}", filename);
+        LOG_ERROR("Cannot open input file: {}", filename);
         return;
     }
 
-    DEBUG("Reading IEEE Common Data Format: {}", filename);
+    LOG_DEBUG("Reading IEEE Common Data Format: {}", filename);
 
     std::string line;
     std::string section;
@@ -65,8 +65,8 @@ void IEEECommonDataFormat::read(const std::string& filename) {
     while (std::getline(file, line)) {
         std::string firstToken = strip(line.substr(0, 4));
 
-        if (line.find("BUS DATA") != std::string::npos) { section = "bus"; DEBUG("Parsing BUS DATA section ..."); continue; }
-        if (line.find("BRANCH DATA") != std::string::npos) { section = "branch"; DEBUG("Parsing BRANCH DATA section ..."); continue; }
+        if (line.find("BUS DATA") != std::string::npos) { section = "bus"; LOG_DEBUG("Parsing BUS DATA section ..."); continue; }
+        if (line.find("BRANCH DATA") != std::string::npos) { section = "branch"; LOG_DEBUG("Parsing BRANCH DATA section ..."); continue; }
         if (line.find("-999") != std::string::npos) { section = ""; continue; }
 
         if (section == "bus" && !firstToken.empty() && std::all_of(firstToken.begin(), firstToken.end(), ::isdigit)) {
@@ -131,5 +131,5 @@ void IEEECommonDataFormat::read(const std::string& filename) {
     branchData.B = Eigen::Map<Eigen::VectorXd>(B.data(), nBranch);
     branchData.tapRatio = Eigen::Map<Eigen::VectorXd>(tap.data(), nBranch);
 
-    DEBUG("IEEE CDF parsing complete: {} bus cards, {} branch cards", nBus, nBranch);
+    LOG_DEBUG("IEEE CDF parsing complete: {} bus cards, {} branch cards", nBus, nBranch);
 }

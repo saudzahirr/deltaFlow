@@ -65,17 +65,17 @@ bool checkQlimits(
             type_bus(idx) = 3;  // PV to PQ
             busData.Qg(idx) = Qmax(idx);  // Fix Q at limit for next solver run
             qlim_hit = true;
-            DEBUG("Q-limit (max) hit at bus {} : Qg = {:.4f} > Qmax = {:.4f}", idx + 1, Qg(idx), Qmax(idx));
+            LOG_DEBUG("Q-limit (max) hit at bus {} : Qg = {:.4f} > Qmax = {:.4f}", idx + 1, Qg(idx), Qmax(idx));
         } else if (Qg(idx) < Qmin(idx)) {
             type_bus(idx) = 3;  // PV to PQ
             busData.Qg(idx) = Qmin(idx);  // Fix Q at limit for next solver run
             qlim_hit = true;
-            DEBUG("Q-limit (min) hit at bus {} : Qg = {:.4f} < Qmin = {:.4f}", idx + 1, Qg(idx), Qmin(idx));
+            LOG_DEBUG("Q-limit (min) hit at bus {} : Qg = {:.4f} < Qmin = {:.4f}", idx + 1, Qg(idx), Qmin(idx));
         }
     }
 
     if (!qlim_hit) {
-        DEBUG("Power flow converged without hitting Q-limits.");
+        LOG_DEBUG("Power flow converged without hitting Q-limits.");
     }
 
     return qlim_hit;

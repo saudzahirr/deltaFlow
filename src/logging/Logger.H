@@ -61,27 +61,27 @@ enum class Level : uint8_t {
 };
 
 /**
-  * @def DEBUG(msg, ...)
+  * @def LOG_DEBUG(msg, ...)
   * @brief Macro for logging a debug-level message.
-  * @def INFO(msg, ...)
+  * @def LOG_INFO(msg, ...)
   * @brief Macro for logging an info-level message.
-  * @def WARN(msg, ...)
+  * @def LOG_WARN(msg, ...)
   * @brief Macro for logging a warning-level message.
-  * @def ERROR(msg, ...)
+  * @def LOG_ERROR(msg, ...)
   * @brief Macro for logging an error-level message.
-  * @def CRITICAL(msg, ...)
+  * @def LOG_CRITICAL(msg, ...)
   * @brief Macro for logging a critical-level message.
-  * @def MESSAGE(msg, ...)
+  * @def LOG_MESSAGE(msg, ...)
   * @brief Macro for printing messages to stdout.
   *
   * All macros use fmt formatting and forward the formatted message to the logger.
   */
-#define DEBUG(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::DEBUG)
-#define INFO(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::INFO)
-#define WARN(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::WARN)
-#define ERROR(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::ERROR)
-#define CRITICAL(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::CRITICAL)
-#define MESSAGE(msg, ...) fmt::print("{}\n", fmt::format(FMT_STRING(msg), ##__VA_ARGS__))
+#define LOG_DEBUG(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::DEBUG)
+#define LOG_INFO(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::INFO)
+#define LOG_WARN(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::WARN)
+#define LOG_ERROR(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::ERROR)
+#define LOG_CRITICAL(msg, ...) Logger::getLogger().log(fmt::format(FMT_STRING(msg), ##__VA_ARGS__), Level::CRITICAL)
+#define LOG_MESSAGE(msg, ...) fmt::print("{}\n", fmt::format(FMT_STRING(msg), ##__VA_ARGS__))
 
  /**
   * @class Logger

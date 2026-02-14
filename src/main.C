@@ -60,23 +60,23 @@ int main(int argc, char* argv[]) {
     std::string solverName = (solver == SolverType::GaussSeidel) ? "Gauss-Seidel" : "Newton-Raphson";
     std::string formatName = (format == InputFormat::IEEE) ? "IEEE Common Data Format" : "PSS/E Raw Format";
 
-    DEBUG("Job name     :: {}", jobName);
-    DEBUG("Input file   :: {}", inputFile);
-    DEBUG("Input format :: {}", formatName);
-    DEBUG("Solver       :: {}", solverName);
-    DEBUG("Tolerance    :: {:.6e}", tolerance);
-    DEBUG("Max iter     :: {}", maxIter);
+    LOG_DEBUG("Job name     :: {}", jobName);
+    LOG_DEBUG("Input file   :: {}", inputFile);
+    LOG_DEBUG("Input format :: {}", formatName);
+    LOG_DEBUG("Solver       :: {}", solverName);
+    LOG_DEBUG("Tolerance    :: {:.6e}", tolerance);
+    LOG_DEBUG("Max iter     :: {}", maxIter);
 
     std::unique_ptr<Reader> reader;
 
     switch (format) {
     case InputFormat::IEEE:
         reader = std::make_unique<IEEECommonDataFormat>();
-        INFO("Reading IEEE Common Data Format file: {}", inputFile);
+        LOG_INFO("Reading IEEE Common Data Format file: {}", inputFile);
         break;
     case InputFormat::PSSE:
         reader = std::make_unique<PSSERawFormat>();
-        INFO("Reading PSS/E Raw Format file: {}", inputFile);
+        LOG_INFO("Reading PSS/E Raw Format file: {}", inputFile);
         break;
     default:
         break;
@@ -88,14 +88,14 @@ int main(int argc, char* argv[]) {
     auto branchData = reader->getBranchData();
 
     if (busData.ID.size() == 0 || branchData.From.size() == 0) {
-        ERROR("No bus or branch data found in '{}'. Check the file exists and is valid.", inputFile);
+        LOG_ERROR("No bus or branch data found in '{}'. Check the file exists and is valid.", inputFile);
         std::exit(1);
     }
 
     int N = busData.ID.size();
     int nBranch = branchData.From.size();
 
-    INFO("Model: {} buses, {} branches", N, nBranch);
+    LOG_INFO("Model: {} buses, {} branches", N, nBranch);
 
     int nSlack = 0, nPV = 0, nPQ = 0;
     for (int i = 0; i < N; ++i) {
@@ -103,10 +103,10 @@ int main(int argc, char* argv[]) {
         else if (busData.Type(i) == 2) nPV++;
         else nPQ++;
     }
-    DEBUG("Bus types: {} Slack, {} PV, {} PQ", nSlack, nPV, nPQ);
+    LOG_DEBUG("Bus types: {} Slack, {} PV, {} PQ", nSlack, nPV, nPQ);
 
     auto Y = computeAdmittanceMatrix(busData, branchData);
-    DEBUG("Admittance matrix computed ({}x{})", N, N);
+    LOG_DEBUG("Admittance matrix computed ({}x{})", N, N);
 
     Eigen::MatrixXd G = Y.array().real().matrix();
     Eigen::MatrixXd B = Y.array().imag().matrix();
@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
     double finalError = 0.0;
     std::vector<std::pair<int, double>> iterationHistory;
 
-    INFO("Starting {} solver ...", solverName);
+    LOG_INFO("Starting {} solver ...", solverName);
 
     switch (solver) {
         case SolverType::GaussSeidel: {
@@ -153,7 +153,7 @@ int main(int argc, char* argv[]) {
                 finalConverged = converged;
 
                 if (!converged) {
-                    ERROR("Gauss-Seidel solver failed to converge.");
+                    LOG_ERROR("Gauss-Seidel solver failed to converge.");
                     break;
                 }
 
@@ -161,7 +161,7 @@ int main(int argc, char* argv[]) {
                                              busData, pv_indices, N);
 
                 if (Q_lim_status)
-                    DEBUG("Re-running Gauss-Seidel with updated bus types ...");
+                    LOG_DEBUG("Re-running Gauss-Seidel with updated bus types ...");
             }
             break;
         }
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
                 finalConverged = converged;
 
                 if (!converged) {
-                    ERROR("Newton-Raphson solver failed to converge.");
+                    LOG_ERROR("Newton-Raphson solver failed to converge.");
                     break;
                 }
 
@@ -198,7 +198,7 @@ int main(int argc, char* argv[]) {
                     busData, pv_indices, N);
 
                 if (Q_lim_status) {
-                    DEBUG("Re-running Newton-Raphson with updated bus types ...");
+                    LOG_DEBUG("Re-running Newton-Raphson with updated bus types ...");
                 }
             }
             break;
@@ -252,8 +252,8 @@ int main(int argc, char* argv[]) {
 
     double PLoss = busData.Pg.sum() - busData.Pl.sum();
     double QLoss = busData.Qg.sum() - busData.Ql.sum();
-    DEBUG("Total real power loss: {:.6f} p.u.", PLoss);
-    DEBUG("Total reactive power loss: {:.6f} p.u.", QLoss);
+    LOG_DEBUG("Total real power loss: {:.6f} p.u.", PLoss);
+    LOG_DEBUG("Total reactive power loss: {:.6f} p.u.", QLoss);
 
     dispBusData(busData);
     dispLineFlow(busData, branchData, Y);

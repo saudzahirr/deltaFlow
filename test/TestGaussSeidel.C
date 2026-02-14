@@ -26,7 +26,7 @@
 #include "TestUtils.H"
 
 TEST_CASE("Gauss-Seidel 5-Bus Power Flow Test", "[Gauss-Seidel][5-Bus]") {
-    DEBUG("Testing [Gauss-Seidel][5-Bus] - 5 Bus System Power Flow ...");
+    LOG_DEBUG("Testing [Gauss-Seidel][5-Bus] - 5 Bus System Power Flow ...");
 
     auto busData    = create5BusBusData();
     auto branchData = create5BusBranchData();
