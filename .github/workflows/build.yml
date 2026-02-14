@@ -5,6 +5,9 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  schedule:
+    # Runs at 03:00 UTC on the 1st day of every month
+    - cron: "0 3 1 * *"
 
 jobs:
   build-and-test:
@@ -30,4 +33,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: binaries-${{ runner.os }}
-          path: bin/
+          path: bin/**/deltaFlow*
