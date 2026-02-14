@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Gauss-Seidel power flow solver implementation.
+ */
+
 #include <cmath>
 #include <complex>
 #include <iostream>
@@ -25,7 +30,7 @@
 
 #include "GaussSeidel.H"
 #include "Logger.H"
-#include "ProgressBar.H"
+#include "Progress.H"
 
 bool GaussSeidel(
     const Eigen::MatrixXcd& Y,
@@ -52,22 +57,22 @@ bool GaussSeidel(
     double error = std::numeric_limits<double>::infinity();
 
     if (omega <= 0.0 || omega >= 2.0) {
-        WARN("Invalid input: Relaxation coefficient must be between 0 and 2.");
-        DEBUG("Setting Relaxation coefficient to 1.");
+        LOG_WARN("Invalid input: Relaxation coefficient must be between 0 and 2.");
+        LOG_DEBUG("Setting Relaxation coefficient to 1.");
         omega = 1.0;
     }
 
     if (omega < 1.0) {
-        CRITICAL("Under-relaxation enabled (omega < 1), this will slow down convergence.");
+        LOG_CRITICAL("Under-relaxation enabled (omega < 1), this will slow down convergence.");
     }
     else if (omega == 1.0) {
-        DEBUG("Standard Gauss-Seidel enabled (omega = 1).");
+        LOG_DEBUG("Standard Gauss-Seidel enabled (omega = 1).");
     }
     else if (omega > 1.0) {
-        DEBUG("Over-relaxation enabled (omega > 1), this will accelerate convergence.");
+        LOG_DEBUG("Over-relaxation enabled (omega > 1), this will accelerate convergence.");
     }
 
-    DEBUG("Relaxation Coefficient :: {}", omega);
+    LOG_DEBUG("Relaxation Coefficient :: {}", omega);
 
     while (error >= tolerance && iteration < maxIter) {
         Eigen::VectorXcd dV = Eigen::VectorXcd::Zero(N);
@@ -105,8 +110,8 @@ bool GaussSeidel(
 
     if (iteration >= maxIter) {
         printConvergenceStatus("Gauss-Seidel", false, iteration, maxIter, error, tolerance);
-        WARN("Gauss-Seidel did not converge within max iterations ({}).", maxIter);
-        DEBUG("Final error norm was {:.6e}, tolerance is {:.6e}.", error, tolerance);
+        LOG_WARN("Gauss-Seidel did not converge within max iterations ({}).", maxIter);
+        LOG_DEBUG("Final error norm was {:.6e}, tolerance is {:.6e}.", error, tolerance);
         return false;
     }
 
@@ -117,7 +122,7 @@ bool GaussSeidel(
     }
 
     printConvergenceStatus("Gauss-Seidel", true, iteration, maxIter, error, tolerance);
-    DEBUG("Gauss-Seidel converged in {} iterations with error norm {:.6e}.", iteration, error);
+    LOG_DEBUG("Gauss-Seidel converged in {} iterations with error norm {:.6e}.", iteration, error);
 
     return true;
 }

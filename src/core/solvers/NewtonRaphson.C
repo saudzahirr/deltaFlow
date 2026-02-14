@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Newton-Raphson power flow solver implementation.
+ */
+
 #include <cmath>
 #include <limits>
 #include <iostream>
@@ -27,7 +32,7 @@
 #include "NewtonRaphson.H"
 #include "Jacobian.H"
 #include "PowerMismatch.H"
-#include "ProgressBar.H"
+#include "Progress.H"
 #include "Data.H"
 #include "Utils.H"
 
@@ -60,8 +65,8 @@ bool NewtonRaphson(
     while (error >= tolerance) {
         if (iter >= maxIter) {
             printConvergenceStatus("Newton-Raphson", false, iter, maxIter, error, tolerance);
-            WARN("Newton-Raphson did not converge within {} iterations.", maxIter);
-            DEBUG("Final max mismatch was {:.6e}, tolerance is {:.6e}.", error, tolerance);
+            LOG_WARN("Newton-Raphson did not converge within {} iterations.", maxIter);
+            LOG_DEBUG("Final max mismatch was {:.6e}, tolerance is {:.6e}.", error, tolerance);
             return false;
         }
         iter++;
@@ -88,10 +93,10 @@ bool NewtonRaphson(
         error = mismatch.cwiseAbs().maxCoeff();
         if (iterHistory) iterHistory->emplace_back(iter, error);
         printIterationProgress("Newton-Raphson", iter, maxIter, error, tolerance);
-        DEBUG("NR iteration {}: max mismatch = {:.16e}", iter, error);
+        LOG_DEBUG("NR iteration {}: max mismatch = {:.16e}", iter, error);
     }
 
     printConvergenceStatus("Newton-Raphson", true, iter, maxIter, error, tolerance);
-    DEBUG("Newton-Raphson converged in {} iterations with max mismatch {:.6e}", iter, error);
+    LOG_DEBUG("Newton-Raphson converged in {} iterations with max mismatch {:.6e}", iter, error);
     return true;
 }

@@ -27,7 +27,7 @@
 #include "TestUtils.H"
 
 TEST_CASE("PSS/E v32 IEEE 14-Bus Power Flow", "[PSSE][IEEE][14-Bus][v32]") {
-    DEBUG("Testing [PSSE][IEEE][14-Bus][v32] - PSS/E v32 IEEE 14-Bus Power Flow ...");
+    LOG_DEBUG("Testing [PSSE][IEEE][14-Bus][v32] - PSS/E v32 IEEE 14-Bus Power Flow ...");
 
     PSSERawFormat reader;
     reader.read(testDataDir("PSSE") + "IEEE14_v32.raw");

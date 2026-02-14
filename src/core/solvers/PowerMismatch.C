@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Active and reactive power mismatch computation implementation.
+ */
+
 #include <cmath>
 
 #include "PowerMismatch.H"

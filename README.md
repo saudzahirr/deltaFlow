@@ -1,70 +1,87 @@
 # deltaFlow
 
-![deltaFlow](./docs/deltaFlow.png)
+![deltaFlow](./docs/assets/deltaFlow.png)
 
-**deltaFlow** is a command-line tool that solves steady-state power flow problems using numerical methods like Gauss-Seidel and Newton-Raphson. It reads input from CSV files for bus and branch data.
+**deltaFlow** is a command-line power flow analysis tool for electrical power systems.
+It solves the steady-state power flow equations using the Gauss-Seidel and Newton-Raphson
+iterative methods, with automatic reactive power limit (Q-limit) enforcement for
+voltage-controlled (PV) buses.
+
+deltaFlow reads standard industry input formats — IEEE Common Data Format (`.cdf`, `.txt`)
+and PSS/E Raw Format (`.raw`) — and produces bus voltage/power summaries and line flow reports.
+
+---
+
+## Features
+
+- **Solvers:** Gauss-Seidel (with relaxation) and Newton-Raphson
+- **Q-limit enforcement:** Automatic PV-to-PQ bus type switching when reactive limits are violated
+- **Input formats:** IEEE Common Data Format and PSS/E Raw Format (v32/v33)
+- **Validated:** Tested against IEEE 14, 30, 57, 118, and 300-bus standard test cases
+- **Cross-platform:** Builds on Linux (GCC) and Windows (MSVC)
+
+---
+
+## Dependencies
+
+| Library | Version | Purpose |
+|---------|---------|---------|
+| [Eigen](https://eigen.tuxfamily.org/) | 3.4.0 | Linear algebra |
+| [fmt](https://fmt.dev/) | 10.2.1 | Formatting and logging |
+| [Catch2](https://github.com/catchorg/Catch2) | 3.5.4 | Unit testing |
+
+Dependencies are managed automatically via [Conan](https://conan.io/).
 
 ---
 
 ## Build Instructions
 
-Requires: A C++17-compatible compiler and CMake.
-
-Build the project with:
+**Requirements:** C++17 compiler, CMake (>= 3.25), Conan 2, Perl
 
 ```sh
-./bin/build.pl -t   # Run build and tests
+./bin/build.pl -b    # Build only
+./bin/build.pl -t    # Build and run tests
+./bin/build.pl -d    # Generate documentation (requires Doxygen)
 ```
-
-Other options:
-
-* `-b`, `--build`: Build only (no tests)
-* `-d`, `--doc`: Generate documentation (requires Doxygen)
 
 ---
 
 ## Usage
 
-```sh
-./deltaFlow [OPTIONS] <method>
+```
+deltaFlow [OPTIONS] <input-file> <solver>
 ```
 
-### Required:
+### Required arguments
 
-* `-b`, `--bus <file>`: Bus data CSV
-* `-l`, `--branch <file>`: Branch data CSV
-* `<method>`: Power flow method (`gauss-seidel` or `newton-raphson`)
+| Argument | Description |
+|----------|-------------|
+| `<input-file>` | Path to input file (`.cdf`, `.txt`, or `.raw`) |
+| `<solver>` | Solver method: `GAUSS` or `NEWTON` |
 
-### Optional:
+### Options
 
-* `-t`, `--tolerance <value>`: Convergence tolerance (default: `1E-8`)
-* `-m`, `--max-iterations <int>`: Max iterations (default: `1024`)
-* `-r`, `--relaxation <value>`: Relaxation factor (Gauss-Seidel only, default: `1.0`)
-* `-h`, `--help`: Show help
-* `-v`, `--version`: Show version
-
----
-
-## Examples
-
-```sh
-./deltaFlow -b data/bus.csv -l data/line.csv gauss-seidel
-./deltaFlow --bus data/bus.csv --line data/line.csv newton-raphson
-```
-
----
-
-## Notes
-
-* Both bus and branch files are required.
-* `--relaxation` is ignored with Newton-Raphson.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-j, --job <name>` | Job name (used for output labeling) | Input filename stem |
+| `-t, --tolerance <value>` | Convergence tolerance | `1E-8` |
+| `-m, --max-iterations <int>` | Maximum solver iterations | `1024` |
+| `-r, --relaxation <value>` | Relaxation coefficient (Gauss-Seidel only) | `1.0` |
+| `-h, --help` | Display help message | |
+| `-v, --version` | Show version and exit | |
 
 ---
 
 ## Documentation
 
-Generate with:
+API documentation is generated with Doxygen:
 
 ```sh
 ./bin/build.pl -d
 ```
+
+---
+
+## License
+
+deltaFlow is licensed under the [GNU General Public License v3.0](LICENSE).

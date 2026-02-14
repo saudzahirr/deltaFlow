@@ -18,7 +18,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "Banner.H"
+/**
+ * @file
+ * @brief File logger implementation.
+ */
+
+#include "Display.H"
 #include "Logger.H"
 
 Logger& Logger::getLogger() {
@@ -34,11 +39,11 @@ Logger::Logger(const std::string& name, Level level) : m_FilePath(name), m_Level
 
     // Write banner to log file
     if (file.is_open()) {
-        file << Banner::fileBanner();
+        file << Display::fileBanner();
         auto now = std::time(nullptr);
         auto ts = fmt::format("{:%d-%b-%Y %H:%M:%S}", fmt::localtime(now));
         file << fmt::format("\n   Log started: {}\n", ts);
-        file << "   " << Banner::separator('-') << "\n\n";
+        file << "   " << Display::separator('-') << "\n\n";
         file.flush();
     }
 }
@@ -47,7 +52,7 @@ Logger::~Logger() {
     if (file.is_open()) {
         auto now = std::time(nullptr);
         auto ts = fmt::format("{:%d-%b-%Y %H:%M:%S}", fmt::localtime(now));
-        file << "\n   " << Banner::separator('-') << "\n";
+        file << "\n   " << Display::separator('-') << "\n";
         file << fmt::format("   Log ended: {}\n", ts);
         file.close();
     }

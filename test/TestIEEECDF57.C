@@ -27,7 +27,7 @@
 #include "TestUtils.H"
 
 TEST_CASE("IEEE CDF 57-Bus Power Flow", "[IEEE][CDF][57-Bus]") {
-    DEBUG("Testing [IEEE][CDF][57-Bus] - IEEE CDF 57-Bus Power Flow ...");
+    LOG_DEBUG("Testing [IEEE][CDF][57-Bus] - IEEE CDF 57-Bus Power Flow ...");
 
     IEEECommonDataFormat reader;
     reader.read(testDataDir("IEEE") + "IEEE57.txt");

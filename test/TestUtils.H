@@ -40,12 +40,13 @@
 
 inline std::string testDataDir(const std::string& subdir = "IEEE") {
     std::string file(__FILE__);
-    auto pos = file.rfind('/');
+    // MSVC uses backslashes in __FILE__, GCC/Clang use forward slashes
+    auto pos = file.find_last_of("/\\");
     return (pos != std::string::npos ? file.substr(0, pos) : ".") + "/data/" + subdir + "/";
 }
 
 // ---------------------------------------------------------------------------
-//  5-Bus test system (used by Admittance, Newton-Raphson, Gauss-Seidel tests)
+//  5-Bus test system
 // ---------------------------------------------------------------------------
 
 inline BusData create5BusBusData() {

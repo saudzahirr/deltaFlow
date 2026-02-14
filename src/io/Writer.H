@@ -33,8 +33,8 @@
 #include <string>
 
 // Forward declaration
-class BusData;
-class BranchData;
+struct BusData;
+struct BranchData;
 
 /**
   * @brief Displays bus data in a human-readable format.

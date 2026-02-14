@@ -18,15 +18,29 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief IEEE Common Data Format reader for deltaFlow.
+ */
+
 #ifndef IEEE_H
 #define IEEE_H
 
 #include "Reader.H"
 
+/**
+ * @class IEEECommonDataFormat
+ * @brief Reads power system data from IEEE Common Data Format files.
+ */
 class IEEECommonDataFormat: public Reader {
     public:
+        /** @brief Destructor. */
         ~IEEECommonDataFormat() = default;
 
+        /**
+         * @brief Parse an IEEE CDF file (.cdf or .txt).
+         * @param filename Path to the CDF file.
+         */
         void read(const std::string& filename) override;
 };
 

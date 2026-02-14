@@ -39,8 +39,8 @@
 
 #include <Eigen/Dense>
 
-class BranchData;
-class BusData;
+struct BranchData;
+struct BusData;
 
 /**
  * @brief Computes the complex bus admittance matrix ($$ Y_{bus} $$).

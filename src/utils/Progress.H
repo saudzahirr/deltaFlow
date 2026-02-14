@@ -62,7 +62,6 @@ inline void printIterationProgress(
     if (iter > 1)
         fmt::print("\033[1F\033[2K");
 
-    // Solver label
     fmt::print(fg(fmt::color::cyan) | fmt::emphasis::bold, "{:<16}", solver);
 
     // Progress bar
@@ -113,7 +112,6 @@ inline void printConvergenceStatus(
     float ratio = maxIter == 0 ? 0.0f : static_cast<float>(iter) / maxIter;
     int filled = static_cast<int>(ratio * barWidth);
 
-    // Solver label
     fmt::print(fg(fmt::color::cyan) | fmt::emphasis::bold, "{:<16}", solver);
 
     if (converged) {

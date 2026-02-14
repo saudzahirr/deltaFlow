@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief PSS/E Raw data format parser implementation.
+ */
+
 #include <algorithm>
 #include <cmath>
 #include <fstream>
@@ -26,20 +31,10 @@
 
 #include "Logger.H"
 #include "PSSE.H"
+#include "Utils.H"
 
-static std::string strip(const std::string& s) {
-    auto start = s.find_first_not_of(" \t\r\n");
-    if (start == std::string::npos) return "";
-    auto end = s.find_last_not_of(" \t\r\n");
-    return s.substr(start, end - start + 1);
-}
-
-static std::string stripQuotes(const std::string& s) {
-    std::string t = strip(s);
-    if (t.size() >= 2 && t.front() == '\'' && t.back() == '\'')
-        return strip(t.substr(1, t.size() - 2));
-    return t;
-}
+using Utilities::strip;
+using Utilities::stripQuotes;
 
 static std::vector<std::string> splitFields(const std::string& line) {
     std::vector<std::string> fields;
@@ -65,11 +60,11 @@ static bool isSectionEnd(const std::string& line) {
 void PSSERawFormat::read(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
-        ERROR("Cannot open input file: {}", filename);
+        LOG_ERROR("Cannot open input file: {}", filename);
         return;
     }
 
-    DEBUG("Reading PSS/E Raw Format: {}", filename);
+    LOG_DEBUG("Reading PSS/E Raw Format: {}", filename);
 
     std::string line;
 
@@ -82,10 +77,10 @@ void PSSERawFormat::read(const std::string& filename) {
     if (hdr.size() >= 2) sbase = std::stod(hdr[1]);
     if (hdr.size() >= 3) version = std::stoi(hdr[2]);
 
-    DEBUG("PSS/E RAW format version {} detected (SBASE = {:.2f} MVA)", version, sbase);
+    LOG_DEBUG("PSS/E RAW format version {} detected (SBASE = {:.2f} MVA)", version, sbase);
 
     if (version != 32 && version != 33) {
-        WARN("PSS/E version {} is not explicitly supported. Attempting to parse as v{}.",
+        LOG_WARN("PSS/E version {} is not explicitly supported. Attempting to parse as v{}.",
              version, (version >= 33 ? 33 : 32));
     }
 
@@ -93,7 +88,7 @@ void PSSERawFormat::read(const std::string& filename) {
     std::string title1, title2;
     std::getline(file, title1);
     std::getline(file, title2);
-    DEBUG("PSS/E case: {}", strip(title1));
+    LOG_DEBUG("PSS/E case: {}", strip(title1));
 
     //  Bus data
     //  v32: I,'NAME',BASKV,IDE,AREA,ZONE,OWNER,VM,VA
@@ -134,7 +129,7 @@ void PSSERawFormat::read(const std::string& filename) {
     }
 
     int nBus = busCount;
-    DEBUG("  {} buses read", nBus);
+    LOG_DEBUG("  {} buses read", nBus);
 
     // Per-bus accumulators
     std::vector<double> Pl(nBus, 0.0), Ql(nBus, 0.0);
@@ -265,7 +260,7 @@ void PSSERawFormat::read(const std::string& filename) {
         if (K != 0) {
             // 3-winding: skip extra winding line (line 5)
             std::getline(file, line);
-            WARN("3-winding transformer ({}-{}-{}) encountered, skipping.", I, J, K);
+            LOG_WARN("3-winding transformer ({}-{}-{}) encountered, skipping.", I, J, K);
             continue;
         }
 
@@ -302,6 +297,6 @@ void PSSERawFormat::read(const std::string& filename) {
     branchData.B        = Eigen::Map<Eigen::VectorXd>(B_vec.data(), nBranch);
     branchData.tapRatio = Eigen::Map<Eigen::VectorXd>(tap_vec.data(), nBranch);
 
-    DEBUG("PSS/E v{} file parsed: {} buses, {} branches (incl. transformers)",
+    LOG_DEBUG("PSS/E v{} file parsed: {} buses, {} branches (incl. transformers)",
           version, nBus, nBranch);
 }

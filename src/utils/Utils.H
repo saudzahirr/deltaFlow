@@ -37,16 +37,45 @@ namespace Utilities {
 
     /**
       * @brief Check if filepath is IEEE Common Data Format.
-      * @param str The filepath.
-      * @return True if extension is .cdf, false otherwise.
+      * @param filePath The filepath.
+      * @return True if extension is .cdf or .txt, false otherwise.
       */
     inline bool isCommonDataFormat(const std::string& filePath) {
       auto ext = std::filesystem::path(filePath).extension();
       return ext == ".cdf" || ext == ".txt";
     }
 
+    /**
+      * @brief Check if filepath is PSS/E Raw format.
+      * @param filePath The filepath.
+      * @return True if extension is .raw, false otherwise.
+      */
     inline bool isRawFormat(const std::string& filePath) {
         return std::filesystem::path(filePath).extension() == ".raw";
+    }
+
+    /**
+      * @brief Strip leading and trailing whitespace from a string.
+      * @param s The input string.
+      * @return Trimmed string.
+      */
+    inline std::string strip(const std::string& s) {
+        auto start = s.find_first_not_of(" \t\r\n");
+        if (start == std::string::npos) return "";
+        auto end = s.find_last_not_of(" \t\r\n");
+        return s.substr(start, end - start + 1);
+    }
+
+    /**
+      * @brief Strip surrounding single quotes and whitespace from a string.
+      * @param s The input string.
+      * @return String with quotes removed.
+      */
+    inline std::string stripQuotes(const std::string& s) {
+        std::string t = strip(s);
+        if (t.size() >= 2 && t.front() == '\'' && t.back() == '\'')
+            return strip(t.substr(1, t.size() - 2));
+        return t;
     }
 }
 
