@@ -222,4 +222,5 @@ deltaFlow.csv
 *.7z
 *.gz
 *.rar
-!*.svg
+!deltaFlow.svg
+!deltaFlow.png
