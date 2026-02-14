@@ -1,4 +1,4 @@
-name: Build
+name: Build and Test
 
 on:
   push:
@@ -7,21 +7,27 @@ on:
     branches: [ "master" ]
 
 jobs:
-  gcc-pipeline:
-    name: GCC Build and Test
-    runs-on: ubuntu-latest
+  build-and-test:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y perl cmake gcc g++
+      - name: Setup Conan
+        uses: conan-io/setup-conan@v1
 
-    - name: Build deltaFlow
-      run: perl ./bin/build.pl -t
+      - name: Build
+        run: perl ./bin/build.pl -t
 
-    - name: CMake Tests
-      run: ctest --output-on-failure
+      - name: Test
+        run: ctest --output-on-failure --test-dir build --build-config Release
 
-    - name: Tests
-      run: perl ./bin/test.pl
+      - name: Upload bin/ artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ runner.os }}
+          path: bin/

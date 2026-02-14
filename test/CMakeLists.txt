@@ -6,28 +6,37 @@ list(FILTER SOURCES EXCLUDE REGEX ".*/main\\.C$")
 
 add_library(deltaFlowLib STATIC ${SOURCES})
 target_include_directories(deltaFlowLib PUBLIC ${INCLUDES})
-target_link_libraries(deltaFlowLib PUBLIC fmt Eigen3)
+target_link_libraries(deltaFlowLib PUBLIC fmt::fmt Eigen3::Eigen)
 
 # Catch2 test dependencies
 set(TEST_LIBS Catch2::Catch2WithMain deltaFlowLib)
 
-# Add TestAdmittance executable
-add_executable(TestAdmittance TestAdmittance.C ${SOURCES})
-target_link_libraries(TestAdmittance PRIVATE ${TEST_LIBS})
-target_include_directories(TestAdmittance PRIVATE ${EIGEN3_INCLUDE_DIRS} .)
-
-# Add TestGaussSeidel executable
-add_executable(TestGaussSeidel TestGaussSeidel.C ${SOURCES})
-target_link_libraries(TestGaussSeidel PRIVATE ${TEST_LIBS})
-target_include_directories(TestGaussSeidel PRIVATE ${EIGEN3_INCLUDE_DIRS} .)
-
-# Add TestNewtonRaphson executable
-add_executable(TestNewtonRaphson TestNewtonRaphson.C ${SOURCES})
-target_link_libraries(TestNewtonRaphson PRIVATE ${TEST_LIBS})
-target_include_directories(TestNewtonRaphson PRIVATE ${EIGEN3_INCLUDE_DIRS} .)
+# Helper macro to add a test executable
+macro(ADD_DELTAFLOW_TEST TEST_NAME)
+    add_executable(${TEST_NAME} ${TEST_NAME}.C ${SOURCES})
+    target_link_libraries(${TEST_NAME} PRIVATE ${TEST_LIBS})
+    target_include_directories(${TEST_NAME} PRIVATE ${EIGEN3_INCLUDE_DIRS} .)
+    catch_discover_tests(${TEST_NAME})
+endmacro()
 
 # Enable automatic Catch2 test discovery
 include(Catch)
-catch_discover_tests(TestAdmittance)
-catch_discover_tests(TestGaussSeidel)
-catch_discover_tests(TestNewtonRaphson)
+
+# Solver tests
+ADD_DELTAFLOW_TEST(TestAdmittance)
+ADD_DELTAFLOW_TEST(TestGaussSeidel)
+ADD_DELTAFLOW_TEST(TestNewtonRaphson)
+
+# IEEE CDF reader tests
+ADD_DELTAFLOW_TEST(TestIEEECDF14)
+ADD_DELTAFLOW_TEST(TestIEEECDF30)
+ADD_DELTAFLOW_TEST(TestIEEECDF57)
+ADD_DELTAFLOW_TEST(TestIEEECDF118)
+ADD_DELTAFLOW_TEST(TestIEEECDF300)
+
+# PSS/E reader tests
+ADD_DELTAFLOW_TEST(TestPSSEIEEE14V32)
+ADD_DELTAFLOW_TEST(TestPSSEIEEE39V33)
+
+# Divergence tests
+ADD_DELTAFLOW_TEST(TestDivergence)
