@@ -276,7 +276,7 @@ int main(int argc, char* argv[]) {
     OutputFile::writeMessageFile(jobName, solverName, iterationHistory, tolerance, finalConverged);
 
     fmt::print("\n");
-    fmt::print(fg(Display::BRAND_COLOR) | fmt::emphasis::bold,
+    fmt::print(fg(Display::LOGO_COLOR) | fmt::emphasis::bold,
         "   THE ANALYSIS HAS BEEN COMPLETED SUCCESSFULLY\n");
     fmt::print("\n");
     fmt::print("   Elapsed time : {:.3f} sec\n", elapsedSec);

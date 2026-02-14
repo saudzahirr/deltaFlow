@@ -46,7 +46,7 @@
  * section headers, and common formatting constants.
  */
 namespace Display {
-    constexpr fmt::rgb BRAND_COLOR{153, 0, 204};   ///< deltaFlow brand color
+    constexpr fmt::rgb LOGO_COLOR{153, 0, 204};   ///< deltaFlow logo color
     constexpr int pageWidth = 80;                   ///< Standard output page width
 
     /**
@@ -235,12 +235,12 @@ namespace Display {
 
         rule();
         starLine("",                                                          BORDER);
-        starLine(mid(R"(/\\)"),                                               BRAND_COLOR);
-        starLine(mid(R"(/  \\)"),                                             BRAND_COLOR);
-        starLine(mid(R"(/    \\)"),                                           BRAND_COLOR);
-        starLine(mid(R"(/      \\)"),                                         BRAND_COLOR);
-        starLine(mid("========="),                                            BRAND_COLOR);
-        starLine(mid("deltaFlow  v" + std::string(deltaFlow_VERSION)),        BRAND_COLOR);
+        starLine(mid(R"(/\\)"),                                               LOGO_COLOR);
+        starLine(mid(R"(/  \\)"),                                             LOGO_COLOR);
+        starLine(mid(R"(/    \\)"),                                           LOGO_COLOR);
+        starLine(mid(R"(/      \\)"),                                         LOGO_COLOR);
+        starLine(mid("========="),                                            LOGO_COLOR);
+        starLine(mid("deltaFlow  v" + std::string(deltaFlow_VERSION)),        LOGO_COLOR);
         starLine("",                                                          BORDER);
         starLine("  Copyright (c) 2024 Saud Zahir.",                          BORDER);
         starLine("  All rights reserved.",                                    BORDER);
@@ -299,16 +299,16 @@ namespace Display {
         fmt::print(fg(fmt::color::white) | fmt::emphasis::bold,
             "             {}\n", std::string(W - 2, '_'));
 
-        printLine("",                                                    BRAND_COLOR);
-        printLine("  deltaFlow -- Power Flow Analysis Software",         BRAND_COLOR);
+        printLine("",                                                    LOGO_COLOR);
+        printLine("  deltaFlow -- Power Flow Analysis Software",         LOGO_COLOR);
         printLine("  A Program for Steady-State Power System Analysis",  DIM);
         printKV("  Version : ", deltaFlow_VERSION,                       INFO, VAL);
         printKV("  CMake   : ", CMake_VERSION,                           INFO, VAL);
         printKV("  GCC     : ", gcc_VERSION,                             INFO, VAL);
-        printLine("",                                                    BRAND_COLOR);
+        printLine("",                                                    LOGO_COLOR);
         printKV("  Copyright (c) 2024 ", "Saud Zahir",                   DIM, fmt::rgb{255, 165, 0});
         printLine("  Licensed under GNU GPL v3.0",                       fmt::rgb{100, 255, 100});
-        printLine("",                                                    BRAND_COLOR);
+        printLine("",                                                    LOGO_COLOR);
         printKV("  Hostname  : ", host,                                  INFO, fmt::rgb{255, 200, 100});
 
         fmt::print(fg(fmt::color::white) | fmt::emphasis::bold,
@@ -332,12 +332,12 @@ namespace Display {
      */
     inline void printSectionHeader(const std::string& title) {
         fmt::print("\n");
-        fmt::print(fg(BRAND_COLOR), "{}\n", separator('*'));
+        fmt::print(fg(LOGO_COLOR), "{}\n", separator('*'));
         fmt::print("\n");
-        fmt::print(fg(BRAND_COLOR) | fmt::emphasis::bold, "{}\n", center(title));
-        fmt::print(fg(BRAND_COLOR), "{}\n", center(std::string(title.size() + 4, '-')));
+        fmt::print(fg(LOGO_COLOR) | fmt::emphasis::bold, "{}\n", center(title));
+        fmt::print(fg(LOGO_COLOR), "{}\n", center(std::string(title.size() + 4, '-')));
         fmt::print("\n");
-        fmt::print(fg(BRAND_COLOR), "{}\n", separator('*'));
+        fmt::print(fg(LOGO_COLOR), "{}\n", separator('*'));
         fmt::print("\n");
     }
 
