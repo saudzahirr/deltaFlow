@@ -39,6 +39,12 @@
 #include <iostream>
 #include <string>
 
+#ifdef _WIN32
+  #ifdef ERROR
+    #undef ERROR
+  #endif
+#endif
+
 /**
   * @enum Level
   * @brief Log severity levels.

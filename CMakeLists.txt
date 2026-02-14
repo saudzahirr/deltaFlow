@@ -12,6 +12,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_definitions(_USE_MATH_DEFINES)
 
+if(MSVC)
+    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN)
+endif()
+
 file(GLOB CMAKE_FILES "${CMAKE_SOURCE_DIR}/cmake/*.cmake")
 
 foreach(CMAKE_FILE ${CMAKE_FILES})
