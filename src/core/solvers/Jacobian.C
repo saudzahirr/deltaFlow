@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Jacobian matrix computation implementation for Newton-Raphson solver.
+ */
+
 #include <cmath>
 
 #include "Jacobian.H"

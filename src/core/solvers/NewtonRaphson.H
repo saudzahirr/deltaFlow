@@ -101,6 +101,7 @@ struct BusData;
   * @param pq_bus_id 0-based indices of PQ buses.
   * @param maxIter Maximum number of iterations (default: 1024).
   * @param tolerance Convergence tolerance for power mismatches (default: $$ 1 \times 10^{-8} $$).
+  * @param iterHistory Optional pointer to store iteration number and error at each step.
   * @return true if converged, false otherwise.
   */
 bool NewtonRaphson(

@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief IEEE Common Data Format parser implementation.
+ */
+
 #include <algorithm>
 #include <fstream>
 #include <map>

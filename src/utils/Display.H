@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Display and formatting utilities for terminal and file output.
+ */
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
@@ -33,20 +38,41 @@
 
 #include "Version.H"
 
+/**
+ * @namespace Display
+ * @brief Terminal and file output formatting for deltaFlow.
+ *
+ * Provides colored terminal banners, plain-text banners for log/output files,
+ * section headers, and common formatting constants.
+ */
 namespace Display {
-    constexpr fmt::rgb BRAND_COLOR{153, 0, 204};
-    constexpr int pageWidth = 80;
+    constexpr fmt::rgb BRAND_COLOR{153, 0, 204};   ///< deltaFlow brand color
+    constexpr int pageWidth = 80;                   ///< Standard output page width
 
+    /**
+     * @brief Returns a separator line of the given character.
+     * @param ch Fill character (default: '=').
+     * @return String of pageWidth characters.
+     */
     inline std::string separator(char ch = '=') {
         return std::string(pageWidth, ch);
     }
 
+    /**
+     * @brief Returns a centered string within the page width.
+     * @param text Text to center.
+     * @return Padded string.
+     */
     inline std::string center(const std::string& text) {
         int pad = (pageWidth - static_cast<int>(text.size())) / 2;
         if (pad <= 0) return text;
         return std::string(pad, ' ') + text;
     }
 
+    /**
+     * @brief Returns the machine hostname.
+     * @return Hostname string, or "unknown" on failure.
+     */
     inline std::string hostname() {
         char buf[256];
     #ifdef _WIN32
@@ -58,6 +84,9 @@ namespace Display {
         return "unknown";
     }
 
+    /**
+     * @brief Returns the plain-text license notice box.
+     */
     inline std::string licenseNotice() {
         constexpr int W = 67;
         constexpr int inner = W - 2;
@@ -106,6 +135,9 @@ namespace Display {
         return s;
     }
 
+    /**
+     * @brief Returns the plain-text product info box.
+     */
     inline std::string productBox() {
         constexpr int W = 59;
 
@@ -135,10 +167,18 @@ namespace Display {
         return s;
     }
 
+    /**
+     * @brief Returns a full plain-text banner for output/log files.
+     */
     inline std::string fileBanner() {
         return licenseNotice() + "\n" + productBox();
     }
 
+    /**
+     * @brief Returns a section header for output files.
+     * @param title Section title.
+     * @return Formatted section header string.
+     */
     inline std::string sectionHeader(const std::string& title) {
         std::string s;
         s += "\n";
@@ -151,6 +191,11 @@ namespace Display {
         return s;
     }
 
+    /**
+     * @brief Returns a sub-section header for output files.
+     * @param title Sub-section title.
+     * @return Formatted sub-section header string.
+     */
     inline std::string subSectionHeader(const std::string& title) {
         std::string s;
         s += "\n";
@@ -161,6 +206,9 @@ namespace Display {
     }
 
 
+    /**
+     * @brief Prints the colored license notice box to terminal.
+     */
     inline void printLicenseNotice() {
         constexpr int W = 67;
         constexpr int inner = W - 2;
@@ -213,6 +261,9 @@ namespace Display {
         rule();
     }
 
+    /**
+     * @brief Prints the colored product info box to terminal.
+     */
     inline void printProductBox() {
         constexpr int W = 59;
         std::string host = hostname();
@@ -264,6 +315,9 @@ namespace Display {
             "            |{}|\n", std::string(W - 2, '_'));
     }
 
+    /**
+     * @brief Prints the full colored banner to terminal.
+     */
     inline void printTerminalBanner() {
         fmt::print("\n");
         printLicenseNotice();
@@ -272,6 +326,10 @@ namespace Display {
         fmt::print("\n");
     }
 
+    /**
+     * @brief Prints a colored section header to terminal.
+     * @param title Section title.
+     */
     inline void printSectionHeader(const std::string& title) {
         fmt::print("\n");
         fmt::print(fg(BRAND_COLOR), "{}\n", separator('*'));

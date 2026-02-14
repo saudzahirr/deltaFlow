@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Base data file reader implementation.
+ */
+
 #include "Reader.H"
 
 const BusData& Reader::getBusData() const noexcept {

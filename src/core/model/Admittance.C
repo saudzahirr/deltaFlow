@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Bus admittance matrix computation implementation.
+ */
+
 #include <complex>
 
 #include "Admittance.H"

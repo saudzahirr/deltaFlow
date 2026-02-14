@@ -18,15 +18,29 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief PSS/E Raw Data Format reader for deltaFlow.
+ */
+
 #ifndef PSSE_H
 #define PSSE_H
 
 #include "Reader.H"
 
+/**
+ * @class PSSERawFormat
+ * @brief Reads power system data from PSS/E Raw format files (v32/v33).
+ */
 class PSSERawFormat: public Reader {
     public:
+        /** @brief Destructor. */
         ~PSSERawFormat() = default;
 
+        /**
+         * @brief Parse a PSS/E .raw file.
+         * @param filename Path to the .raw file.
+         */
         void read(const std::string& filename) override;
 
 };

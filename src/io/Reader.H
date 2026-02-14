@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Abstract base class for power system data file readers.
+ */
+
 #ifndef READER_H
 #define READER_H
 
@@ -25,19 +30,39 @@
 
 #include "Data.H"
 
+/**
+ * @class Reader
+ * @brief Abstract reader interface for power system input formats.
+ *
+ * Subclasses implement the read() method for specific file formats
+ * (e.g., IEEE Common Data Format, PSS/E Raw).
+ */
 class Reader {
     public:
+        /** @brief Virtual destructor. */
         virtual ~Reader() = default;
 
+        /**
+         * @brief Read and parse the input file.
+         * @param filename Path to the input data file.
+         */
         virtual void read(const std::string& filename) = 0;
 
+        /**
+         * @brief Get the parsed bus data.
+         * @return Const reference to BusData.
+         */
         const BusData& getBusData() const noexcept;
 
+        /**
+         * @brief Get the parsed branch data.
+         * @return Const reference to BranchData.
+         */
         const BranchData& getBranchData() const noexcept;
 
     protected:
-        BusData busData;
-        BranchData branchData;
+        BusData busData;          ///< Parsed bus data
+        BranchData branchData;    ///< Parsed branch data
 };
 
 #endif

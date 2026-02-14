@@ -92,6 +92,7 @@
   * @param maxIter Maximum number of iterations (default: 1024).
   * @param tolerance Convergence tolerance for bus voltage updates (default: $$ 1 \times 10^{-8} $$).
   * @param omega Relaxation parameter for the Successive Over-Relaxation (SOR) method (default: 1.0; SOR not applied).
+  * @param iterHistory Optional pointer to store iteration number and error at each step.
   * @return true if the algorithm converged within the specified number of iterations, false otherwise.
   */
 bool GaussSeidel(

@@ -32,7 +32,7 @@
 #include <string>
 
 /**
-  * @enum Solver
+  * @enum SolverType
   * @brief Types of solvers supported by deltaFlow.
   *
   * - GaussSeidel: Gauss-Seidel iterative method.
@@ -43,9 +43,13 @@ enum class SolverType {
     NewtonRaphson   ///< Newton-Raphson iterative method
 };
 
+/**
+  * @enum InputFormat
+  * @brief Supported input file formats.
+  */
 enum class InputFormat {
-  IEEE,
-  PSSE
+  IEEE,   ///< IEEE Common Data Format (.cdf, .txt)
+  PSSE    ///< PSS/E Raw Data Format (.raw)
 };
 
 /**
@@ -111,6 +115,10 @@ class ArgumentParser final {
          */
         SolverType getSolverType() const noexcept;
 
+        /**
+         * @brief Get the input file format.
+         * @return InputFormat enum (IEEE or PSSE).
+         */
         InputFormat getInputFormat() const noexcept;
 
     private:
@@ -120,7 +128,7 @@ class ArgumentParser final {
         int maxIterations = 1024;     ///< Maximum number of iterations ($$ N_{max} $$)
         double relaxation = 1.0;      ///< Relaxation coefficient ($$ \omega $$)
         SolverType method;                ///< Solver type
-        InputFormat format;
+        InputFormat format;                ///< Input file format
 
         /**
          * @brief Parse the provided arguments.

@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Terminal output writer implementation for bus data and line flow results.
+ */
+
 #include <complex>
 #include <fstream>
 #include <iomanip>

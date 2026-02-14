@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Gauss-Seidel power flow solver implementation.
+ */
+
 #include <cmath>
 #include <complex>
 #include <iostream>

@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Reactive power limit enforcement implementation.
+ */
+
 #include <cmath>
 #include <limits>
 #include <vector>

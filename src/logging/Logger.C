@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief File logger implementation.
+ */
+
 #include "Display.H"
 #include "Logger.H"
 

@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief PSS/E Raw data format parser implementation.
+ */
+
 #include <algorithm>
 #include <cmath>
 #include <fstream>

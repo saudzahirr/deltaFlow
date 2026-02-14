@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * @brief Newton-Raphson power flow solver implementation.
+ */
+
 #include <cmath>
 #include <limits>
 #include <iostream>
