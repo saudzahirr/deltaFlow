@@ -124,11 +124,11 @@ namespace Display {
 
         return {
             {"",                                                            false},
-            {mid(R"(/\\)"),                                                 true},
-            {mid(R"(/  \\)"),                                               true},
-            {mid(R"(/    \\)"),                                             true},
-            {mid(R"(/      \\)"),                                           true},
-            {mid("========="),                                              true},
+            {mid(R"(   /\\     +)"),                                        true},
+            {mid(R"(  /  \\     )"),                                        true},
+            {mid(R"( /    \\    )"),                                        true},
+            {mid(R"(/      \\   )"),                                        true},
+            {mid(R"(=========  -)"),                                        true},
             {mid("deltaFlow  v" + std::string(deltaFlow_VERSION)),          true},
             {"",                                                            false},
             {"  Copyright (c) 2024 Saud Zahir.",                            false},
